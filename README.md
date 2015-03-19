@@ -15,6 +15,39 @@ Installation:
   }
 ```
 
+Configuration:
+--------------
+Add the following to grails-app/conf/Config.groovy:
+```
+grails {
+  plugin {
+    awsinstance {
+      accessKey='AWS_ACCESSKEY'
+      secretKey='AWS_SECRETKEY'
+      s3.bucketName='AWS_S3_BUCKETNAME'
+      ses.mailFrom='AWS_SES_MAILFROM'
+    }
+  }
+}
+```
+See <a href="https://github.com/ikakara-team/grails-aws-instance">aws-instance README</a>
+
+By default, automatically creates DynamoDB tables w/ "DEV" prefix.  Platform (admin) controllers to manage
+config hosts and RDS (sql) use the homePath of "/".
+```
+grails {
+  plugin {
+    awsappconfig {
+      homePath = "/"
+      dataSource {
+        dbPrefix="DEV"
+        dbCreate="create" //'create', 'create-drop',''
+      }
+    }
+  }
+}
+```
+
 Usage:
 --------------
 
