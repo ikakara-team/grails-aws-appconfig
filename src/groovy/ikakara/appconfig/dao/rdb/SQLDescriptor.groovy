@@ -21,7 +21,7 @@ import groovy.transform.ToString
  *
  * @author Allen
  */
-@ToString(excludes="username,password")
+@ToString(includePackage=false, excludes="username,password")
 @Immutable
 public class SQLDescriptor {
   String driverClassName

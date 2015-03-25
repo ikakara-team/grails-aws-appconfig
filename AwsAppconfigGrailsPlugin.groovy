@@ -2,7 +2,7 @@ import grails.util.Holders
 
 class AwsAppconfigGrailsPlugin {
   def version = "0.1"
-  def grailsVersion = "2.0 > *"
+  def grailsVersion = "2.2 > *"
   List loadAfter = ['aws-instance']
   def pluginExcludes = [
     "grails-app/views/index.gsp",

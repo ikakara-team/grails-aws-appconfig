@@ -34,7 +34,7 @@ import ikakara.appconfig.dao.rdb.SQLDescriptor
  * @author Allen
  */
 @JsonAutoDetect(fieldVisibility = Visibility.NONE, getterVisibility = Visibility.NONE)
-@ToString(ignoreNulls=true, excludes="username,password")
+@ToString(includePackage=false, ignoreNulls=true, excludes="username,password")
 @Validateable
 @Slf4j("LOG")
 //@CompileStatic

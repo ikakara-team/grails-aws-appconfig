@@ -32,7 +32,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore
  * @author Allen
  */
 @JsonAutoDetect(fieldVisibility = Visibility.NONE, getterVisibility = Visibility.NONE)
-@ToString(ignoreNulls=true)
+@ToString(includePackage=false, ignoreNulls=true)
 @Validateable
 @Slf4j("LOG")
 //@CompileStatic
