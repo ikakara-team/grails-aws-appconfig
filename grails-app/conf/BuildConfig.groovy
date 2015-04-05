@@ -18,14 +18,14 @@ grails.project.dependency.resolution = {
 
   dependencies {
     // specify dependencies here under either 'build', 'compile', 'runtime', 'test' or 'provided' scopes eg.
-    compile ('com.amazonaws:aws-java-sdk:1.9.24') { // http://aws.amazon.com/releasenotes/Java?browse=1
+    compile ('com.amazonaws:aws-java-sdk:1.9.27') { // http://aws.amazon.com/releasenotes/Java?browse=1
       export = false
     }
   }
 
   plugins {
     // needed for testing
-    build (":tomcat:8.0.20" ){ // 8.0.18 has issues - https://jira.grails.org/browse/GPTOMCAT-29
+    build (":tomcat:8.0.21" ){ // 8.0.18 has issues - https://jira.grails.org/browse/GPTOMCAT-29
       export = false
     }
 
@@ -33,8 +33,8 @@ grails.project.dependency.resolution = {
     compile ':plugin-config:0.2.0'
 
     // needed for aws-appconfig
-    compile (':aws-instance:0.3.7') {
-      export = true
+    compile (':aws-instance:0.4.1') {
+      export = false
     }
 
     build(":release:3.1.1",
