@@ -18,7 +18,7 @@ grails.project.dependency.resolution = {
 
   dependencies {
     // specify dependencies here under either 'build', 'compile', 'runtime', 'test' or 'provided' scopes eg.
-    compile ('com.amazonaws:aws-java-sdk:1.9.27') { // http://aws.amazon.com/releasenotes/Java?browse=1
+    compile ('com.amazonaws:aws-java-sdk:1.9.30') { // http://aws.amazon.com/releasenotes/Java?browse=1
       export = false
     }
   }
@@ -33,7 +33,7 @@ grails.project.dependency.resolution = {
     compile ':plugin-config:0.2.0'
 
     // needed for aws-appconfig
-    compile (':aws-instance:0.4.1') {
+    compile (':aws-instance:0.5') {
       export = false
     }
 
