@@ -28,10 +28,6 @@ import com.fasterxml.jackson.core.type.TypeReference
 
 import ikakara.appconfig.dao.shard.ShardHost
 
-/**
- *
- * @author Allen
- */
 @Validateable(nullable = true)
 @Slf4j("LOG")
 @CompileStatic

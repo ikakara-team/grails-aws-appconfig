@@ -23,10 +23,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore
 
 import ikakara.awsinstance.dao.ICommandObject
 
-/**
- *
- * @author Allen
- */
 @Slf4j("LOG")
 @CompileStatic
 public class NameVersionShard extends BaseShard implements ICommandObject {

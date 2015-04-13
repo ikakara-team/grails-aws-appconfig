@@ -41,10 +41,6 @@ import ikakara.awsinstance.aws.DynamoHelper
 import ikakara.awsinstance.dao.ITypeObject
 import ikakara.awsinstance.dao.dynamo.ADynamoObject
 
-/**
- *
- * @author Allen
- */
 @DynamoDBTable(tableName = "ConfigVersions")
 @Slf4j("LOG")
 @CompileStatic

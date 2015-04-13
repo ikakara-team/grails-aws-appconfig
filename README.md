@@ -9,7 +9,7 @@ Installation:
 ```
   plugins {
 ...
-    compile ':aws-instance:0.5'
+    compile ':aws-instance:0.5.1'
     compile ':aws-appconfig:0.1'
 ...
   }
@@ -62,4 +62,6 @@ Apache 2 License - http://www.apache.org/licenses/LICENSE-2.0
 
 History:
 --------------
+```
 0.1 - initial checkin
+```

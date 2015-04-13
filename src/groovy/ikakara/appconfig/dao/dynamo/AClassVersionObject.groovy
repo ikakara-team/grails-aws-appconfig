@@ -32,10 +32,6 @@ import ikakara.awsinstance.dao.ICommandObject
 import ikakara.awsinstance.dao.dynamo.ADynamoObject
 import ikakara.awsinstance.util.CalendarUtil
 
-/**
- *
- * @author Allen
- */
 @Slf4j("LOG")
 @CompileStatic
 abstract public class AClassVersionObject extends ADynamoObject implements ICommandObject {

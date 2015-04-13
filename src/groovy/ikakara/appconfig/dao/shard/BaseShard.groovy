@@ -20,10 +20,6 @@ import groovy.util.logging.Slf4j
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.annotation.JsonIgnore
 
-/**
- *
- * @author Allen
- */
 @Slf4j("LOG")
 @CompileStatic
 public class BaseShard {
@@ -39,4 +35,3 @@ public class BaseShard {
     }
   }
 }
-

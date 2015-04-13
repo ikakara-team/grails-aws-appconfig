@@ -32,11 +32,6 @@ import ikakara.appconfig.dao.shard.NameVersionShard
 import ikakara.awsinstance.json.FasterXMLInstance
 import ikakara.awsinstance.dao.dynamo.ADynamoObject
 
-
-/**
- *
- * @author Allen
- */
 @Slf4j("LOG")
 @CompileStatic
 abstract public class AClassVersionShardObject extends AClassVersionObject implements IShardObject {

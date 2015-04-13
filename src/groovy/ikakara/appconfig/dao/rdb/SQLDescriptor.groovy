@@ -17,10 +17,6 @@ package ikakara.appconfig.dao.rdb
 import groovy.transform.Immutable
 import groovy.transform.ToString
 
-/**
- *
- * @author Allen
- */
 @ToString(includePackage=false, excludes="username,password")
 @Immutable
 public class SQLDescriptor {

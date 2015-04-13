@@ -15,9 +15,9 @@
 package ikakara.appconfig.dao.shard
 
 import groovy.transform.ToString
-import groovy.transform.CompileStatic
 import groovy.util.logging.Slf4j
 
+import grails.compiler.GrailsCompileStatic
 import grails.validation.Validateable
 import grails.validation.ValidationErrors
 import org.springframework.validation.DefaultMessageCodesResolver
@@ -29,15 +29,11 @@ import com.fasterxml.jackson.annotation.JsonIgnore
 
 import ikakara.appconfig.dao.rdb.SQLDescriptor
 
-/**
- *
- * @author Allen
- */
 @JsonAutoDetect(fieldVisibility = Visibility.NONE, getterVisibility = Visibility.NONE)
 @ToString(includePackage=false, ignoreNulls=true, excludes="username,password")
 @Validateable
 @Slf4j("LOG")
-//@CompileStatic
+@GrailsCompileStatic
 public class ShardRDS extends NameVersionShard {
   // http://www.sql-workbench.net/manual/jdbc-setup.html
   // id_shard
@@ -95,19 +91,19 @@ public class ShardRDS extends NameVersionShard {
     return sb
   }
 
-  static public String URL_DB(url, db) {
+  static public String URL_DB(String url, String db) {
     return url + "/" + db
   }
 
   // Rewrite to be @Immutable, tuple
 
-  static public SQLDescriptor sql_descriptor(HashMap shard) {
+  static public SQLDescriptor sql_descriptor(HashMap<String, String> shard) {
     SQLDescriptor des = new SQLDescriptor(
       shard.driverClassName,
       ShardRDS.URL_DB(shard.url, shard.db),
       shard.username,
       shard.password,
-      shard.options ? shard.options : null
+      shard.options ?: null
     )
     return des
   }
@@ -118,7 +114,7 @@ public class ShardRDS extends NameVersionShard {
       shard.url_db(),
       shard.username,
       shard.password,
-      shard.options ? shard.options : null
+      shard.options ?: null
     )
     return des
   }

@@ -18,10 +18,6 @@ import java.util.Map;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 
-/**
- *
- * @author Allen
- */
 public interface IShardObject {
 
   Integer getShardCount();

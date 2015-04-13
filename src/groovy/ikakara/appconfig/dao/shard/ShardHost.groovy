@@ -15,9 +15,9 @@
 package ikakara.appconfig.dao.shard
 
 import groovy.transform.ToString
-import groovy.transform.CompileStatic
 import groovy.util.logging.Slf4j
 
+import grails.compiler.GrailsCompileStatic
 import grails.validation.Validateable
 import grails.validation.ValidationErrors
 import org.springframework.validation.DefaultMessageCodesResolver
@@ -27,15 +27,11 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.annotation.JsonIgnore
 
-/**
- *
- * @author Allen
- */
 @JsonAutoDetect(fieldVisibility = Visibility.NONE, getterVisibility = Visibility.NONE)
 @ToString(includePackage=false, ignoreNulls=true)
 @Validateable
 @Slf4j("LOG")
-//@CompileStatic
+@GrailsCompileStatic
 public class ShardHost extends NameVersionShard {
   // id_shard
   @JsonProperty String host
