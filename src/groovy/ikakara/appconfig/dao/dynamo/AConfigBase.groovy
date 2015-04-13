@@ -132,7 +132,7 @@ abstract public class AConfigBase extends AClassVersionShardObject implements IT
         }
       }
     }
-    
+
     obj?.marshalAttributesIN(item)
 
     return obj
