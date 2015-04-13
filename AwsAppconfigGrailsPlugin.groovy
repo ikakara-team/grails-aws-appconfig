@@ -14,7 +14,7 @@ class AwsAppconfigGrailsPlugin {
   def author = "Allen Arakaki"
   def authorEmail = ""
   def description = '''\
-Uses AWS DynamoDB to store application configuration.
+Uses AWS DynamoDB to store (versioned) application configuration.
 '''
   def documentation = "http://grails.org/plugin/aws-appconfig"
   def license = "APACHE"
