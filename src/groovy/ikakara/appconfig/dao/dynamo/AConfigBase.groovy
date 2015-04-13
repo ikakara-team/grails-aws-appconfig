@@ -127,17 +127,13 @@ abstract public class AConfigBase extends AClassVersionShardObject implements IT
       if (item.isPresent("ConfigType")) {
         String type = item.getString("ConfigType")
         switch (type) {
-        case ConfigRDS.CONFIG_TYPE:
-          obj = new ConfigRDS()
-          obj.marshalAttributesIN(item)
-          break
-        case ConfigHost.CONFIG_TYPE:
-          obj = new ConfigHost()
-          obj.marshalAttributesIN(item)
-          break
+        case ConfigRDS.CONFIG_TYPE: obj = new ConfigRDS(); break
+        case ConfigHost.CONFIG_TYPE: obj = new ConfigHost(); break
         }
       }
     }
+    
+    obj?.marshalAttributesIN(item)
 
     return obj
   }
