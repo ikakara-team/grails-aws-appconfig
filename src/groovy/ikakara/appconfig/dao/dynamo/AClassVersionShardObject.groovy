@@ -17,6 +17,7 @@ package ikakara.appconfig.dao.dynamo
 import java.util.Map
 import java.util.HashMap
 
+import groovy.transform.ToString
 import groovy.transform.CompileStatic
 import groovy.util.logging.Slf4j
 
@@ -32,6 +33,7 @@ import ikakara.appconfig.dao.shard.NameVersionShard
 import ikakara.awsinstance.json.FasterXMLInstance
 import ikakara.awsinstance.dao.dynamo.ADynamoObject
 
+@ToString(includePackage=false, ignoreNulls=true, excludes="shardMapStr")
 @Slf4j("LOG")
 @CompileStatic
 abstract public class AClassVersionShardObject extends AClassVersionObject implements IShardObject {
@@ -50,15 +52,6 @@ abstract public class AClassVersionShardObject extends AClassVersionObject imple
 
   @Override
   abstract public TypeReference typeReference()
-
-  @Override
-  public String toString() {
-    return new ToStringBuilder(this).append("class", className).append("version", version)
-    .append("status", versionStatus)
-    .append("note", versionNote)
-    .append("count", shardCount)
-    .toString()
-  }
 
   @Override
   public void marshalAttributesIN(Item item) {

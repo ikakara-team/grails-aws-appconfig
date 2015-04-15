@@ -18,6 +18,7 @@ import java.util.Date
 import java.util.List
 import java.util.Map
 
+import groovy.transform.ToString
 import groovy.transform.CompileStatic
 import groovy.util.logging.Slf4j
 
@@ -32,6 +33,7 @@ import ikakara.awsinstance.dao.ICommandObject
 import ikakara.awsinstance.dao.dynamo.ADynamoObject
 import ikakara.awsinstance.util.CalendarUtil
 
+@ToString(includePackage=false, ignoreNulls=true)
 @Slf4j("LOG")
 @CompileStatic
 abstract public class AClassVersionObject extends ADynamoObject implements ICommandObject {
