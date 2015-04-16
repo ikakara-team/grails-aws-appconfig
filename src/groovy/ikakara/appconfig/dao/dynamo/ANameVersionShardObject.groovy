@@ -153,9 +153,9 @@ abstract class ANameVersionShardObject extends ANameVersionObject implements ISh
       shard = (NameVersionShard) getShardMap()[shardId]
       if (shard) {
         // init
-        shard.setId_version(version)
-        shard.setId_name(name)
-        shard.setShard(shardId)
+        shard.id_version = version
+        shard.id_name = name
+        shard.shard = shardId
       }
     }
 

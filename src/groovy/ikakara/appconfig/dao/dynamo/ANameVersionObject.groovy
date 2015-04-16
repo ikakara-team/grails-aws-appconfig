@@ -41,7 +41,7 @@ abstract class ANameVersionObject extends ADynamoObject implements ICommandObjec
   @DynamoDBHashKey(attributeName = "Name")
   String name
   @DynamoDBRangeKey(attributeName = "Version")
-  String version // YYMMddHHmmss
+  Long version // YYMMddHHmmss
   @DynamoDBAttribute(attributeName = "VersionStatus")
   String versionStatus
   @DynamoDBAttribute(attributeName = "VersionNote")
@@ -77,7 +77,7 @@ abstract class ANameVersionObject extends ADynamoObject implements ICommandObjec
       name = item.getString("Name")
     }
     if (item.isPresent("Version")) {
-      version = item.getString("Version")
+      version = item.getLong("Version")
     }
     if (item.isPresent("VersionStatus")) {
       versionStatus = item.getString("VersionStatus")
@@ -109,7 +109,7 @@ abstract class ANameVersionObject extends ADynamoObject implements ICommandObjec
   @DynamoDBIgnore
   @Override
   String getId() {
-    return getName() + "_" + getVersion()
+    return name + "_" + version
   }
 
   @Override
@@ -129,7 +129,7 @@ abstract class ANameVersionObject extends ADynamoObject implements ICommandObjec
   void initParameters(Map params) {
     //if (params) {
     name = (String) params.name
-    version = (String) params.version
+    version = (Long) params.version
     versionStatus = (String) params.versionStatus
     versionNote = (String) params.versionNote
     //}
@@ -140,11 +140,19 @@ abstract class ANameVersionObject extends ADynamoObject implements ICommandObjec
     return true // needed to be used as "command object"
   }
 
+  void setVersion(String ver) {
+    try {
+      version = Long.parseLong(ver)
+    } catch (e) {
+
+    }
+  }
+
   @DynamoDBIgnore
   Date getVersionDate() {
     if (!versionDate) {
       if (version != null) {
-        versionDate = CalendarUtil.getDateFromString_CONCISE(version)
+        versionDate = CalendarUtil.getDateFromString_CONCISE(version?.toString())
       } else {
         setVersionDate(new Date())
       }
@@ -154,7 +162,7 @@ abstract class ANameVersionObject extends ADynamoObject implements ICommandObjec
 
   void setVersionDate(Date d) {
     versionDate = d
-    version = CalendarUtil.getStringFromDate_CONCISE(d)
+    setVersion(CalendarUtil.getStringFromDate_CONCISE(d))
   }
 
   List<ANameVersionObject> findByNameAndStatus(String status) {

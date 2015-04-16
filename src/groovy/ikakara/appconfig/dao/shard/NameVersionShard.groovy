@@ -24,7 +24,7 @@ import ikakara.awsinstance.dao.ICommandObject
 class NameVersionShard extends BaseShard implements ICommandObject {
   // Transient
   @JsonIgnore String id_name
-  @JsonIgnore String id_version
+  @JsonIgnore Long   id_version
 
   String getNameVersionId() {
     return id_name + "_" + id_version
@@ -45,9 +45,19 @@ class NameVersionShard extends BaseShard implements ICommandObject {
     }
 
     id_name = ids[0]
-    id_version = ids[1]
+    setId_version(ids[1])
     if (ids.length > 2 && "null" != ids[2]) {
       setIdShard(ids[2])
+    }
+  }
+
+  void setId_version(String s) {
+    if (s) {
+      try {
+        id_version = s as Long
+      } catch (NumberFormatException e) {
+        LOG.error("setId_version: $e.message")
+      }
     }
   }
 

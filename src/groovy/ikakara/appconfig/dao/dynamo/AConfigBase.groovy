@@ -61,7 +61,7 @@ abstract class AConfigBase extends ANameVersionShardObject implements ITypeObjec
       .withTableName(tableName())
       .withAttributeDefinitions(
         new AttributeDefinition(nameHashKey(), ScalarAttributeType.S),
-        new AttributeDefinition(nameRangeKey(), ScalarAttributeType.S))
+        new AttributeDefinition(nameRangeKey(), ScalarAttributeType.N))
       .withKeySchema(
         new KeySchemaElement(nameHashKey(), KeyType.HASH),
         new KeySchemaElement(nameRangeKey(), KeyType.RANGE))
