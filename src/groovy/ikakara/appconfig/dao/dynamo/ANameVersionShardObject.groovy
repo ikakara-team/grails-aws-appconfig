@@ -29,7 +29,7 @@ import ikakara.awsinstance.json.FasterXMLInstance
 @CompileStatic
 @Slf4j("LOG")
 @ToString(includePackage=false, ignoreNulls=true, excludes="shardMapStr")
-abstract class AClassVersionShardObject extends AClassVersionObject implements IShardObject {
+abstract class ANameVersionShardObject extends ANameVersionObject implements IShardObject {
 
   Integer shardCount = 0
   String shardMapStr
@@ -152,7 +152,7 @@ abstract class AClassVersionShardObject extends AClassVersionObject implements I
       if (shard) {
         // init
         shard.setId_version(version)
-        shard.setId_name(className)
+        shard.setId_name(name)
         shard.setShard(shardId)
       }
     }

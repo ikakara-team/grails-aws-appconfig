@@ -1,9 +1,9 @@
-<div class="fieldcontain ${hasErrors(bean: configRDSInstance, field: 'className', 'error')} required">
-  <label for="className">
-    <g:message code="configRDS.className.label" default="Class Name" />
+<div class="fieldcontain ${hasErrors(bean: configRDSInstance, field: 'name', 'error')} required">
+  <label for="name">
+    <g:message code="configRDS.name.label" default="Name" />
     <span class="required-indicator">*</span>
   </label>
-  <g:textField name="className" required="" value="${configRDSInstance?.className}"/>
+  <g:textField name="name" required="" value="${configRDSInstance?.name}"/>
 </div>
 <div class="fieldcontain ${hasErrors(bean: configRDSInstance, field: 'version', 'error')} required">
   <label for="version">

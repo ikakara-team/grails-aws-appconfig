@@ -38,7 +38,7 @@ import ikakara.awsinstance.dao.dynamo.ADynamoObject
 @CompileStatic
 @DynamoDBTable(tableName = "ConfigVersions")
 @Slf4j("LOG")
-abstract class AConfigBase extends AClassVersionShardObject implements ITypeObject {
+abstract class AConfigBase extends ANameVersionShardObject implements ITypeObject {
 
   private static String TABLE_NAME
 

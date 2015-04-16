@@ -23,7 +23,7 @@
       <table>
         <thead>
           <tr>
-            <g:sortableColumn property="className" title="${message(code: 'platformConfigRDS.className.label', default: 'Class<br/>Name')}" />
+            <g:sortableColumn property="name" title="${message(code: 'platformConfigRDS.name.label', default: 'Class<br/>Name')}" />
             <g:sortableColumn property="version" title="${message(code: 'platformConfigRDS.version.label', default: 'Version')}" />
               <g:sortableColumn property="versionStatus" title="${message(code: 'platformConfigRDS.versionStatus.label', default: 'Version<br/>Status')}" />
               <g:sortableColumn property="versionNote" title="${message(code: 'platformConfigRDS.versionNote.label', default: 'Version<br/>Note')}" />
@@ -34,7 +34,7 @@
                 <tbody>
                   <g:each in="${configRDSInstanceList}" status="i" var="configRDSInstance">
                     <tr class="${(i % 2) == 0 ? 'even' : 'odd'}">
-                      <td>${fieldValue(bean: configRDSInstance, field: "className")}</td>
+                      <td>${fieldValue(bean: configRDSInstance, field: "name")}</td>
                       <td><g:link action="showConfig" id="${configRDSInstance.id}">${fieldValue(bean: configRDSInstance, field: "version")}</g:link></td>
                       <td>${fieldValue(bean: configRDSInstance, field: "versionStatus")}</td>
                       <td>${fieldValue(bean: configRDSInstance, field: "versionNote")}</td>

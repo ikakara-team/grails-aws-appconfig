@@ -20,10 +20,10 @@
         <div class="message" role="status">${flash.message}</div>
       </g:if>
       <ol class="property-list platformConfigRDS">
-        <g:if test="${configRDSInstance?.className}">
+        <g:if test="${configRDSInstance?.name}">
           <li class="fieldcontain">
-            <span id="className-label" class="property-label"><g:message code="platformConfigRDS.className.label" default="Class Name" /></span>
-            <span class="property-value" aria-labelledby="className-label"><g:fieldValue bean="${configRDSInstance}" field="className"/></span>
+            <span id="name-label" class="property-label"><g:message code="platformConfigRDS.name.label" default="Name" /></span>
+            <span class="property-value" aria-labelledby="name-label"><g:fieldValue bean="${configRDSInstance}" field="name"/></span>
           </li>
         </g:if>
         <g:if test="${configRDSInstance?.version}">

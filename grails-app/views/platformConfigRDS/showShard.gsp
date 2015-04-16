@@ -23,8 +23,8 @@
       <ol class="property-list platformConfigRDS">
         <g:if test="${shardRDSInstance?.id_name}">
           <li class="fieldcontain" style="background-color: #FFAAAA;">
-            <span id="className-label" class="property-label"><g:message code="platformConfigRDS.className.label" default="Class Name" /></span>
-            <span class="property-value" aria-labelledby="className-label"><g:fieldValue bean="${shardRDSInstance}" field="id_name"/></span>
+            <span id="name-label" class="property-label"><g:message code="platformConfigRDS.name.label" default="Name" /></span>
+            <span class="property-value" aria-labelledby="name-label"><g:fieldValue bean="${shardRDSInstance}" field="id_name"/></span>
           </li>
         </g:if>
         <g:if test="${shardRDSInstance?.id_version}">
@@ -41,7 +41,7 @@
         </g:if>
         <g:if test="${shardRDSInstance?.driverClassName}">
           <li class="fieldcontain">
-            <span id="driverClassName-label" class="property-label"><g:message code="platformConfigRDS.driverClassName.label" default="Driver Class Name" /></span>
+            <span id="driverClassName-label" class="property-label"><g:message code="platformConfigRDS.driverClassName.label" default="Driver Name" /></span>
             <span class="property-value" aria-labelledby="driverClassName-label"><g:fieldValue bean="${shardRDSInstance}" field="driverClassName"/></span>
           </li>
         </g:if>

@@ -32,13 +32,13 @@ import ikakara.awsinstance.util.CalendarUtil
 @CompileStatic
 @ToString(includePackage=false, ignoreNulls=true)
 @Slf4j("LOG")
-abstract class AClassVersionObject extends ADynamoObject implements ICommandObject {
+abstract class ANameVersionObject extends ADynamoObject implements ICommandObject {
 
   public static final String STATUS_UNKNOWN = "UNKNOWN"
   public static final String STATUS_ACTIVE = "ACTIVE"
   public static final String STATUS_INACTIVE = "INACTIVE"
 
-  String className
+  String name
   String version // YYMMddHHmmss
   String versionStatus
   String versionNote
@@ -47,11 +47,11 @@ abstract class AClassVersionObject extends ADynamoObject implements ICommandObje
   protected Date versionDate
 
   def valueHashKey() {
-    return className
+    return name
   }
 
   String nameHashKey() {
-    return "ClassName"
+    return "Name"
   }
 
   def valueRangeKey() {
@@ -64,8 +64,8 @@ abstract class AClassVersionObject extends ADynamoObject implements ICommandObje
 
   void marshalAttributesIN(Item item) {
     //if (map) {
-    if (item.isPresent("ClassName")) {
-      className = item.getString("ClassName")
+    if (item.isPresent("Name")) {
+      name = item.getString("Name")
     }
     if (item.isPresent("Version")) {
       version = item.getString("Version")
@@ -100,7 +100,7 @@ abstract class AClassVersionObject extends ADynamoObject implements ICommandObje
   @DynamoDBIgnore
   @Override
   String getId() {
-    return getClassName() + "_" + getVersion()
+    return getName() + "_" + getVersion()
   }
 
   @Override
@@ -111,7 +111,7 @@ abstract class AClassVersionObject extends ADynamoObject implements ICommandObje
 
     String[] ids = id.split("_")
     if (ids.length > 1) {
-      setClassName(ids[0])
+      setName(ids[0])
       setVersion(ids[1])
     }
   }
@@ -119,7 +119,7 @@ abstract class AClassVersionObject extends ADynamoObject implements ICommandObje
   @Override
   void initParameters(Map params) {
     //if (params) {
-    className = (String) params.className
+    name = (String) params.name
     version = (String) params.version
     versionStatus = (String) params.versionStatus
     versionNote = (String) params.versionNote
@@ -148,9 +148,9 @@ abstract class AClassVersionObject extends ADynamoObject implements ICommandObje
     version = CalendarUtil.getStringFromDate_CONCISE(d)
   }
 
-  @DynamoDBHashKey(attributeName = "ClassName")
-  String getClassName() {
-    return className
+  @DynamoDBHashKey(attributeName = "Name")
+  String getName() {
+    return name
   }
 
   @DynamoDBRangeKey(attributeName = "Version")
@@ -168,7 +168,7 @@ abstract class AClassVersionObject extends ADynamoObject implements ICommandObje
     return versionNote
   }
 
-  List<AClassVersionObject> findByClassAndStatus(String status) {
+  List<ANameVersionObject> findByClassAndStatus(String status) {
     String where = "VersionStatus = :myStatus"
     ValueMap valueMap = new ValueMap().withString(":myStatus", status)
 

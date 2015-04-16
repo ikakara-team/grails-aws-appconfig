@@ -23,8 +23,8 @@
       <ol class="property-list adminConfigHost">
         <g:if test="${shardHostInstance?.id_name}">
           <li class="fieldcontain" style="background-color: #FFAAAA;">
-            <span id="className-label" class="property-label"><g:message code="adminConfigHost.className.label" default="Class Name" /></span>
-            <span class="property-value" aria-labelledby="className-label"><g:fieldValue bean="${shardHostInstance}" field="id_name"/></span>
+            <span id="name-label" class="property-label"><g:message code="adminConfigHost.name.label" default="Name" /></span>
+            <span class="property-value" aria-labelledby="name-label"><g:fieldValue bean="${shardHostInstance}" field="id_name"/></span>
           </li>
         </g:if>
         <g:if test="${shardHostInstance?.id_version}">

@@ -23,7 +23,7 @@
       <table>
         <thead>
           <tr>
-            <g:sortableColumn property="className" title="${message(code: 'adminConfigHost.className.label', default: 'Class<br/>Name')}" />
+            <g:sortableColumn property="name" title="${message(code: 'adminConfigHost.name.label', default: 'Class<br/>Name')}" />
             <g:sortableColumn property="version" title="${message(code: 'adminConfigHost.version.label', default: 'Version')}" />
               <g:sortableColumn property="versionStatus" title="${message(code: 'adminConfigHost.versionStatus.label', default: 'Version<br/>Status')}" />
               <g:sortableColumn property="versionNote" title="${message(code: 'adminConfigHost.versionNote.label', default: 'Version<br/>Note')}" />
@@ -34,7 +34,7 @@
                 <tbody>
                   <g:each in="${configHostInstanceList}" status="i" var="configHostInstance">
                     <tr class="${(i % 2) == 0 ? 'even' : 'odd'}">
-                      <td>${fieldValue(bean: configHostInstance, field: "className")}</td>
+                      <td>${fieldValue(bean: configHostInstance, field: "name")}</td>
                       <td><g:link action="showConfig" id="${configHostInstance.id}">${fieldValue(bean: configHostInstance, field: "version")}</g:link></td>
                       <td>${fieldValue(bean: configHostInstance, field: "versionStatus")}</td>
                       <td>${fieldValue(bean: configHostInstance, field: "versionNote")}</td>
