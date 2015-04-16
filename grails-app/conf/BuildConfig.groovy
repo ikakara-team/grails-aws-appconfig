@@ -25,7 +25,7 @@ grails.project.dependency.resolution = {
     compile ':plugin-config:0.2.0'
 
     // needed for aws-appconfig
-    compile ':aws-instance:0.5.2'
+    compile ':aws-instance:0.5.3'
 
     build(":release:3.1.1",
           ":rest-client-builder:2.1.1") {
