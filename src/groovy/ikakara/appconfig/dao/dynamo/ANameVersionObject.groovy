@@ -140,6 +140,36 @@ abstract class ANameVersionObject extends ADynamoObject implements ICommandObjec
     return true // needed to be used as "command object"
   }
 
+  ANameVersionObject withName(String str) {
+    name = str
+    return this
+  }
+
+  ANameVersionObject withVersion(Long ver) {
+    version = ver
+    return this
+  }
+
+  ANameVersionObject withVersion(Date date) {
+    setVersionDate(date)
+    return this
+  }
+
+  ANameVersionObject withVersion(String str) {
+    setVersion(str)
+    return this
+  }
+
+  ANameVersionObject withVersionStatus(String str) {
+    versionStatus = str
+    return this
+  }
+
+  ANameVersionObject withVersionNote(String str) {
+    versionNote = str
+    return this
+  }
+
   void setVersion(String ver) {
     try {
       version = Long.parseLong(ver)

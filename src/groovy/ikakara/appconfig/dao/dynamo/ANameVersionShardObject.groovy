@@ -36,11 +36,6 @@ abstract class ANameVersionShardObject extends ANameVersionObject implements ISh
   @DynamoDBAttribute(attributeName = "ShardMap")
   String shardMapStr
 
-  // shouldn't be needed but groovyc complains in concrete subclasses using @CompileStatic that there's no setter
-  void setShardCount(Integer count) {
-    shardCount = count
-  }
-
   @Override
   void marshalAttributesIN(Item item) {
     if (!item) {
@@ -83,6 +78,11 @@ abstract class ANameVersionShardObject extends ANameVersionObject implements ISh
     }
   }
 
+  // shouldn't be needed but groovyc complains in concrete subclasses using @CompileStatic that there's no setter
+  void setShardCount(Integer count) {
+    shardCount = count
+  }
+
   void setShardCount(String s) {
     if (s) {
       try {
@@ -91,6 +91,21 @@ abstract class ANameVersionShardObject extends ANameVersionObject implements ISh
         LOG.error("setShardCount:$e.message")
       }
     }
+  }
+
+  ANameVersionShardObject withShardCount(Integer count) {
+    shardCount = count
+    return this
+  }
+
+  ANameVersionShardObject withShardCount(String str) {
+    setShardCount(str)
+    return this
+  }
+
+  ANameVersionShardObject withShardMapStr(String str) {
+    shardMapStr = str
+    return this
   }
 
   String toJSON(Map sm) {
