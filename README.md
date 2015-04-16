@@ -10,7 +10,7 @@ Installation:
   plugins {
 ...
     compile ':aws-instance:0.5.3'
-    compile ':aws-appconfig:0.2'
+    compile ':aws-appconfig:0.3'
 ...
   }
 ```
@@ -50,6 +50,8 @@ grails {
 
 Usage:
 --------------
+```
+```
 
 
 Copyright & License:
@@ -63,6 +65,7 @@ Apache 2 License - http://www.apache.org/licenses/LICENSE-2.0
 History:
 --------------
 ```
+0.3 - more cleanup
 0.2 - merged Burt's cleanup
 0.1 - initial checkin
 ```
