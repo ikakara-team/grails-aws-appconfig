@@ -1,29 +1,25 @@
 grails.project.work.dir = 'target'
-grails.project.target.level = 1.7
-grails.project.source.level = 1.7
 
 grails.project.dependency.resolver = "maven"
 grails.project.dependency.resolution = {
 
-  inherits("global")
+  inherits "global"
   log "warn"
 
   repositories {
-    grailsCentral()
     mavenLocal()
+    grailsCentral()
     mavenCentral()
   }
 
   dependencies {
-    // specify dependencies here under either 'build', 'compile', 'runtime', 'test' or 'provided' scopes eg.
     compile ('com.amazonaws:aws-java-sdk:1.9.30') { // http://aws.amazon.com/releasenotes/Java?browse=1
       export = false
     }
   }
 
   plugins {
-    // needed for testing
-    build (":tomcat:8.0.21" ){ // 8.0.18 has issues - https://jira.grails.org/browse/GPTOMCAT-29
+    build (":tomcat:8.0.21" ){
       export = false
     }
 

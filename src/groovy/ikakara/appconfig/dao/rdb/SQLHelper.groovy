@@ -15,73 +15,66 @@
 package ikakara.appconfig.dao.rdb
 
 import java.sql.SQLException
-import java.util.ArrayList
-import java.util.HashMap
-import java.util.Map
-
-import groovy.transform.ToString
-import groovy.transform.CompileStatic
-import groovy.util.logging.Slf4j
+import grails.util.Holders
 import groovy.sql.GroovyRowResult
 import groovy.sql.Sql
-
-import grails.util.Holders
+import groovy.transform.CompileStatic
+import groovy.transform.ToString
+import groovy.util.logging.Slf4j
 
 import org.apache.tomcat.jdbc.pool.DataSource
 import org.apache.tomcat.jdbc.pool.PoolProperties
-import org.apache.commons.lang.builder.ToStringBuilder
 
-import ikakara.appconfig.dao.rdb.SQLDescriptor
 import ikakara.appconfig.util.Stats
 
-@ToString(includePackage=false, excludes="_username,_password")
-@Slf4j("LOG")
 @CompileStatic
-public class SQLHelper {
+@Slf4j("LOG")
+@ToString(includePackage=false, excludes="_username,_password")
+class SQLHelper {
 
   // config requires a boolean true, (String) "true" will be false
-  private static Boolean _pooled = Holders.getFlatConfig().get("dataSource.pooled") instanceof Boolean ? (Boolean) Holders.getFlatConfig().get("dataSource.pooled") : false
-  private static Map<String, DataSource> _ds_map = new HashMap<String, DataSource>()
+  private static Boolean _pooled = Holders.flatConfig["dataSource.pooled"] instanceof Boolean ? (Boolean) Holders.flatConfig["dataSource.pooled"] : false
+  private static Map<String, DataSource> _ds_map = [:]
   //
-  private final int MAX_RETRIES = 5
-  private final int WAIT_TIME = 200 // milliseconds
-  private final int WAIT_TIME_COMMUNICATION_ERROR = 30000 // milliseconds
+  private static final int MAX_RETRIES = 5
+  private static final int WAIT_TIME = 200 // milliseconds
+  private static final int WAIT_TIME_COMMUNICATION_ERROR = 30000 // milliseconds
   //
-  private String _url = null
-  private String _bare_url = null
-  private String _username = null
-  private String _password = null
-  private String _driver = null
-  private Sql _sql = null
-  private DataSource _ds = null
-  private Stats _stats = null
+  private String _url
+  private String _bare_url
+  private String _username
+  private String _password
+  private String _driver
+  private Sql _sql
+  private DataSource _ds
+  private Stats _stats
   static Map<String, Stats> _conn_stats = new HashMap<String, Stats>()
 
   // this can be removed later
-  static public synchronized HashMap<String, Stats.Info> getAllStats() {
-    HashMap<String, Stats.Info> ret = new HashMap<String, Stats.Info>()
-    for (Map.Entry<String, Stats> e : _conn_stats.entrySet()) {
-      ret.put(e.getKey(), e.getValue().get())
+  static synchronized HashMap<String, Stats.Info> getAllStats() {
+    Map<String, Stats.Info> ret = [:]
+    _conn_stats.each { String key, Stats value ->
+      ret[key] = value.get()
     }
     return ret
   }
 
-  static public boolean isPooled() {
+  static boolean isPooled() {
     return _pooled
   }
 
   SQLHelper(SQLDescriptor des) {
-    LOG.debug("SQLHelper:" + Holders.getFlatConfig().get("dataSource.pooled") + " pooled:" + _pooled)
-    if (des != null) {
-      _url = des.getUrl()
+    LOG.debug("SQLHelper:${Holders.flatConfig["dataSource.pooled"]} pooled:$_pooled")
+    if (des) {
+      _url = des.url
       _bare_url = des.url
       _username = des.username
       _password = des.password
       _driver = des.driverClassName
 
       // Append options
-      if (des.getOptions() != null && !"".equals(des.getOptions())) {
-        _url = _url + "?" + des.getOptions()
+      if (des.options) {
+        _url += "?" + des.options
       }
 
       // Use dataSource pool
@@ -92,44 +85,31 @@ public class SQLHelper {
     }
   }
 
-  static public synchronized Stats getStats(String url) {
-    Stats ret = _conn_stats.get(url)
-    if (ret == null) {
+  static synchronized Stats getStats(String url) {
+    Stats ret = _conn_stats[url]
+    if (!ret) {
       ret = new Stats(url.substring(url.lastIndexOf('/') + 1))
-      _conn_stats.put(url, ret)
+      _conn_stats[url] = ret
     }
     return ret
   }
 
   synchronized DataSource _getDataSource() {
-    DataSource ds = _ds_map.get(_url)
-    if (ds == null) {
+    DataSource ds = _ds_map[_url]
+    if (!ds) {
       // TBD: many of these properties need to be in a config
-      PoolProperties p = new PoolProperties()
-      p.setUrl(_url)
-      p.setDriverClassName(_driver) //"com.mysql.jdbc.Driver")
-      p.setUsername(_username)
-      p.setPassword(_password)
-      p.setJmxEnabled(true)
-      p.setTestWhileIdle(false)
-      p.setTestOnBorrow(true)
-      p.setValidationQuery("SELECT 1")
-      p.setTestOnReturn(false)
-      p.setValidationInterval(30000)
-      p.setTimeBetweenEvictionRunsMillis(30000)
-      p.setMaxActive(20)
-      p.setMaxIdle(4)
-      p.setInitialSize(0)
-      p.setMaxWait(600000) // 10 mins
-      //p.setRemoveAbandonedTimeout(60)
-      p.setMinEvictableIdleTimeMillis(30000)
-      p.setMinIdle(0)
-      p.setLogAbandoned(true)
-      p.setRemoveAbandoned(false)
-      //p.setJdbcInterceptors("org.apache.tomcat.jdbc.pool.interceptor.ConnectionState;"+"org.apache.tomcat.jdbc.pool.interceptor.StatementFinalizer");
-      ds = new DataSource()
-      ds.setPoolProperties(p)
-      _ds_map.put(_url, ds)
+      ds = new DataSource(poolProperties: new PoolProperties(
+        url: _url, driverClassName: _driver, //"com.mysql.jdbc.Driver")
+        username: _username, password: _password, jmxEnabled: true,
+        testWhileIdle: false, testOnBorrow: true, validationQuery: "SELECT 1",
+        testOnReturn: false, validationInterval: 30000, timeBetweenEvictionRunsMillis: 30000,
+        maxActive: 20, maxIdle: 4, initialSize: 0, maxWait: 600000, // 10 mins
+        //removeAbandonedTimeout: 60,
+        minEvictableIdleTimeMillis: 30000, minIdle: 0, logAbandoned: true,
+        //jdbcInterceptors: "org.apache.tomcat.jdbc.pool.interceptor.ConnectionState;"+"org.apache.tomcat.jdbc.pool.interceptor.StatementFinalizer",
+        removeAbandoned: false
+      ))
+      _ds_map[_url] = ds
     }
     return ds
   }
@@ -144,8 +124,8 @@ public class SQLHelper {
     }
   }
 
-  public void close() {
-    if (_sql != null) {
+  void close() {
+    if (_sql) {
       _sql.close()
       _sql = null
     }
@@ -155,29 +135,29 @@ public class SQLHelper {
     long start = System.currentTimeMillis()
     int retries = 0
     int wait = WAIT_TIME
-    while (_sql == null) {
+    while (!_sql) {
       try {
-        if (_ds != null) {
+        if (_ds) {
           _sql = new Sql(_ds)
         } else {
           _sql = Sql.newInstance(_url, _username, _password, _driver)
         }
       } catch (SQLException e) {
-        LOG.error("sql_instance " + _url + ": " + e.getMessage())
+        LOG.error("sql_instance $_url: $e.message")
       } catch (ClassNotFoundException cnfe) {
         LOG.error("sql_instance:", cnfe)
       } finally {
-        if (_sql == null) {
+        if (!_sql) {
           retries++
           if (retries > MAX_RETRIES) {
             LOG.error("sql_instance: COMMUNICATION RETRY FAILED!!!")
             break
           }
           try {
-            LOG.error("sql_instance: COMMUNICATION RETRY wait=" + wait)
-            Thread.sleep(wait)
+            LOG.error("sql_instance: COMMUNICATION RETRY wait=$wait")
+            sleep(wait)
             // exponential backoff
-            wait = wait * 2
+            wait *= 2
           } catch (InterruptedException ie) {
             LOG.error("sql_instance:", ie)
             break
@@ -189,32 +169,32 @@ public class SQLHelper {
     return _sql
   }
 
-  GroovyRowResult retry_firstRow(String q, ArrayList param_array) throws SQLException {
-    if (sql_instance() == null) {
+  GroovyRowResult retry_firstRow(String q, List param_array) throws SQLException {
+    if (!sql_instance()) {
       throw new SQLException("sql_instance() failed!!!")
     }
 
     int retries = 0
     int wait = WAIT_TIME
-    GroovyRowResult row = null
-    while (row == null) {
+    GroovyRowResult row
+    while (!row) {
       try {
-        row = (GroovyRowResult) _sql.firstRow(q, param_array)
+        row = _sql.firstRow(q, param_array)
       } catch (SQLException e) {
-        LOG.error("retry_firstRow " + _url + ": " + e.getMessage())
-      } catch (Exception unknown) {
+        LOG.error("retry_firstRow $_url: $e.message")
+      } catch (unknown) {
         LOG.error("retry_firstRow:", unknown)
       } finally {
-        if (row == null) {
+        if (!row) {
           retries++
           if (retries > MAX_RETRIES) {
             throw new SQLException("retry_firstRow: RETRY FAILED!!!")
           }
           try {
-            LOG.error("retry_firstRow: RETRY wait=" + wait)
-            Thread.sleep(wait)
+            LOG.error("retry_firstRow: RETRY wait=$wait")
+            sleep(wait)
             // exponential backoff
-            wait = wait * 2
+            wait *= 2
           } catch (InterruptedException ie) {
             LOG.error("retry_firstRow:", ie)
             break
@@ -224,5 +204,4 @@ public class SQLHelper {
     }
     return row
   }
-
 }

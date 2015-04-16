@@ -14,25 +14,22 @@
  */
 package ikakara.appconfig.dao.shard
 
-import groovy.transform.ToString
-import groovy.util.logging.Slf4j
-
 import grails.compiler.GrailsCompileStatic
 import grails.validation.Validateable
 import grails.validation.ValidationErrors
-import org.springframework.validation.DefaultMessageCodesResolver
+import groovy.transform.ToString
+import groovy.util.logging.Slf4j
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect
-import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility
 import com.fasterxml.jackson.annotation.JsonProperty
-import com.fasterxml.jackson.annotation.JsonIgnore
+import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility
 
+@GrailsCompileStatic
 @JsonAutoDetect(fieldVisibility = Visibility.NONE, getterVisibility = Visibility.NONE)
+@Slf4j("LOG")
 @ToString(includePackage=false, ignoreNulls=true)
 @Validateable
-@Slf4j("LOG")
-@GrailsCompileStatic
-public class ShardHost extends NameVersionShard {
+class ShardHost extends NameVersionShard {
   // id_shard
   @JsonProperty String host
   @JsonProperty String port
@@ -46,24 +43,24 @@ public class ShardHost extends NameVersionShard {
   }
 
   @Override
-  public void initParameters(Map params) {
-    if (params != null && !params.isEmpty()) {
+  void initParameters(Map params) {
+    if (params) {
       super.initParameters(params)
-      host = (String) params.get("host")
-      port = (String) params.get("port")
-      options = (String) params.get("options")
+      host = (String) params.host
+      port = (String) params.port
+      options = (String) params.options
     }
   }
 
-  public ShardHost() {
+  ShardHost() {
 
   }
 
-  public ShardHost(Map params) {
+  ShardHost(Map params) {
     initParameters(params)
   }
 
-  public String prettyPrint() {
+  String prettyPrint() {
     return shard + " - " + host + ":" + port
   }
 }

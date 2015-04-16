@@ -1,4 +1,3 @@
-<%@ page import="ikakara.appconfig.dao.dynamo.ConfigRDS" %>
 <div class="fieldcontain ${hasErrors(bean: configRDSInstance, field: 'className', 'error')} required">
   <label for="className">
     <g:message code="configRDS.className.label" default="Class Name" />

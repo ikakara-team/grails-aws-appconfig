@@ -14,9 +14,6 @@
  */
 package ikakara.appconfig.dao.dynamo
 
-import java.util.Map
-import java.util.HashMap
-
 import groovy.transform.CompileStatic
 import groovy.util.logging.Slf4j
 
@@ -25,34 +22,20 @@ import org.apache.commons.lang.builder.ToStringBuilder
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBAttribute
 import com.amazonaws.services.dynamodbv2.document.Item
 
-import com.fasterxml.jackson.core.type.TypeReference
-
 import ikakara.appconfig.dao.IShardObject
 import ikakara.appconfig.dao.shard.NameVersionShard
-import ikakara.awsinstance.json.FasterXMLInstance
 import ikakara.awsinstance.dao.dynamo.ADynamoObject
+import ikakara.awsinstance.json.FasterXMLInstance
 
-@Slf4j("LOG")
 @CompileStatic
-abstract public class AClassVersionShardObject extends AClassVersionObject implements IShardObject {
+@Slf4j("LOG")
+abstract class AClassVersionShardObject extends AClassVersionObject implements IShardObject {
 
-  protected Integer shardCount = 0
-  protected String shardMapStr
-
-  @Override
-  abstract public ADynamoObject newInstance(Item item)
+  Integer shardCount = 0
+  String shardMapStr
 
   @Override
-  abstract public Map getShardMap()
-
-  @Override
-  abstract public void setShardMap(Map sm)
-
-  @Override
-  abstract public TypeReference typeReference()
-
-  @Override
-  public String toString() {
+  String toString() {
     return new ToStringBuilder(this).append("class", className).append("version", version)
     .append("status", versionStatus)
     .append("note", versionNote)
@@ -60,34 +43,38 @@ abstract public class AClassVersionShardObject extends AClassVersionObject imple
     .toString()
   }
 
+  // shouldn't be needed but groovyc complains in concrete subclasses using @CompileStatic that there's no setter
+  void setShardCount(Integer count) {
+    shardCount = count
+  }
+
   @Override
-  public void marshalAttributesIN(Item item) {
-    if (item != null) {
-      super.marshalAttributesIN(item)
-      if (item.isPresent("ShardCount")) {
-        shardCount = item.getInt("ShardCount")
-      }
-      if (item.isPresent("ShardMap")) {
-        shardMapStr = item.getString("ShardMap")
-      }
+  void marshalAttributesIN(Item item) {
+    if (!item) {
+      return
+    }
+
+    super.marshalAttributesIN(item)
+    if (item.isPresent("ShardCount")) {
+      shardCount = item.getInt("ShardCount")
+    }
+    if (item.isPresent("ShardMap")) {
+      shardMapStr = item.getString("ShardMap")
     }
   }
 
   @Override
-  public Item marshalItemOUT(boolean bRemoveAttributeNull) {
-    Item outItem = super.marshalItemOUT(bRemoveAttributeNull)
-    if (outItem == null) {
-      outItem = new Item()
-    }
+  Item marshalItemOUT(boolean removeAttributeNull) {
+    Item outItem = super.marshalItemOUT(removeAttributeNull) ?: new Item()
 
     if (shardCount != null) {
       outItem = outItem.withNumber("ShardCount", shardCount)
-    } else if (bRemoveAttributeNull) {
+    } else if (removeAttributeNull) {
       outItem = outItem.removeAttribute("ShardCount")
     }
-    if (shardMapStr != null && !"".equals(shardMapStr)) {
+    if (shardMapStr) {
       outItem = outItem.withString("ShardMap", shardMapStr)
-    } else if (bRemoveAttributeNull) {
+    } else if (removeAttributeNull) {
       outItem = outItem.removeAttribute("ShardMap")
     }
 
@@ -95,25 +82,25 @@ abstract public class AClassVersionShardObject extends AClassVersionObject imple
   }
 
   @Override
-  public void initParameters(Map params) {
-    if (params != null && !params.isEmpty()) {
+  void initParameters(Map params) {
+    if (params) {
       super.initParameters(params)
-      setShardCount((String) params.get("shardCount"))
-      shardMapStr = (String) params.get("shardMapStr")
+      setShardCount((String) params.shardCount)
+      shardMapStr = (String) params.shardMapStr
     }
   }
 
-  public void setShardCount(String s) {
-    if (s != null && !"".equals(s)) {
+  void setShardCount(String s) {
+    if (s) {
       try {
-        shardCount = Integer.parseInt(s)
+        shardCount = s as Integer
       } catch (NumberFormatException e) {
-        LOG.error("setShardCount:" + e.getMessage())
+        LOG.error("setShardCount:$e.message")
       }
     }
   }
 
-  public String toJSON(Map sm) {
+  String toJSON(Map sm) {
     if (sm != null) {
       setShardMap(sm)
     }
@@ -121,57 +108,57 @@ abstract public class AClassVersionShardObject extends AClassVersionObject imple
     if (getShardMap() != null) {
       try {
         shardMapStr = FasterXMLInstance.objectMapper.writeValueAsString(getShardMap())
-      } catch (Exception e) {
-        LOG.error("toJSON" + e.getMessage())
+      } catch (e) {
+        LOG.error("toJSON $e.message")
       }
     }
     return shardMapStr
   }
 
-  public Map fromJSON() {
+  Map fromJSON() {
     if (shardMapStr != null) {
       try {
         Map map = (Map)FasterXMLInstance.objectMapper.readValue(shardMapStr, typeReference())
         setShardMap(map)
-      } catch (Exception e) {
-        LOG.error("fromJSON" + e.getMessage())
+      } catch (e) {
+        LOG.error("fromJSON $e.message")
       }
     }
     return getShardMap()
   }
 
-  public void replaceShard(Integer key, NameVersionShard shard) {
+  void replaceShard(Integer key, NameVersionShard shard) {
     if (getShardMap() == null) {
       fromJSON()
       if (getShardMap() == null) {
-        setShardMap(new HashMap<>())
+        setShardMap([:])
       }
     }
 
     Map sm = getShardMap()
 
     NameVersionShard s = (NameVersionShard) sm.remove(key)
-    if (s != null) {
-      LOG.info("Removing shard:" + s)
+    if (s) {
+      LOG.info("Removing shard: $s")
     }
 
-    if (shard != null) {
-      sm.put(key, shard)
+    if (shard) {
+      sm[key] = shard
       setShardMap(sm)
     }
 
     toJSON(null)
   }
 
-  public NameVersionShard findShard(Integer shardId) {
-    NameVersionShard shard = null
+  NameVersionShard findShard(Integer shardId) {
+    NameVersionShard shard
     if (getShardMap() == null) {
       fromJSON()
     }
 
-    if (getShardMap() != null) {
-      shard = (NameVersionShard) getShardMap().get(shardId)
-      if (shard != null) {
+    if (getShardMap()) {
+      shard = (NameVersionShard) getShardMap()[shardId]
+      if (shard) {
         // init
         shard.setId_version(version)
         shard.setId_name(className)
@@ -182,26 +169,13 @@ abstract public class AClassVersionShardObject extends AClassVersionObject imple
     return shard
   }
 
-  @Override
   @DynamoDBAttribute(attributeName = "ShardCount")
-  public Integer getShardCount() {
+  Integer getShardCount() {
     return shardCount
   }
 
-  @Override
-  public void setShardCount(Integer count) {
-    shardCount = count
-  }
-
-  @Override
   @DynamoDBAttribute(attributeName = "ShardMap")
-  public String getShardMapStr() {
+  String getShardMapStr() {
     return shardMapStr
   }
-
-  @Override
-  public void setShardMapStr(String name) {
-    shardMapStr = name
-  }
-
 }

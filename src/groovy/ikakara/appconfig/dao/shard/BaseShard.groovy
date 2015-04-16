@@ -18,19 +18,18 @@ import groovy.transform.CompileStatic
 import groovy.util.logging.Slf4j
 
 import com.fasterxml.jackson.annotation.JsonProperty
-import com.fasterxml.jackson.annotation.JsonIgnore
 
-@Slf4j("LOG")
 @CompileStatic
-public class BaseShard {
+@Slf4j("LOG")
+class BaseShard {
   @JsonProperty Integer shard
 
-  public void setIdShard(String s) {
-    if (s != null && !"".equals(s)) {
+  void setIdShard(String s) {
+    if (s) {
       try {
-        shard = Integer.parseInt(s)
+        shard = s as Integer
       } catch (NumberFormatException e) {
-        LOG.error("setIdShard:" + e.getMessage())
+        LOG.error("setIdShard: $e.message")
       }
     }
   }

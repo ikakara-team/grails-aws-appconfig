@@ -1,21 +1,10 @@
-import grails.util.Holders
-
 class AwsAppconfigGrailsPlugin {
   def version = "0.1"
   def grailsVersion = "2.2 > *"
   List loadAfter = ['aws-instance']
-  def pluginExcludes = [
-    "grails-app/views/index.gsp",
-    "grails-app/views/error.gsp",
-    "grails-app/i18n/*",
-    "web-app/**/*"
-  ]
-  def title = "AWS App Config Plugin" // Headline display name of the plugin
+  def title = "AWS App Config Plugin"
   def author = "Allen Arakaki"
-  def authorEmail = ""
-  def description = '''\
-Uses AWS DynamoDB to store (versioned) application configuration.
-'''
+  def description = 'Uses AWS DynamoDB to store (versioned) application configuration.'
   def documentation = "http://grails.org/plugin/aws-appconfig"
   def license = "APACHE"
   def issueManagement = [url: 'https://github.com/ikakara-team/grails-aws-appconfig/issues']

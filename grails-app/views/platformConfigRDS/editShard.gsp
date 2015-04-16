@@ -1,4 +1,3 @@
-<%@ page import="ikakara.appconfig.dao.shard.ShardRDS" %>
 <!DOCTYPE html>
 <html>
   <head>
