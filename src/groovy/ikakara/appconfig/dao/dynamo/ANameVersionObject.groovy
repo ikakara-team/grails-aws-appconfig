@@ -38,30 +38,39 @@ abstract class ANameVersionObject extends ADynamoObject implements ICommandObjec
   public static final String STATUS_ACTIVE = "ACTIVE"
   public static final String STATUS_INACTIVE = "INACTIVE"
 
+  @DynamoDBHashKey(attributeName = "Name")
   String name
+  @DynamoDBRangeKey(attributeName = "Version")
   String version // YYMMddHHmmss
+  @DynamoDBAttribute(attributeName = "VersionStatus")
   String versionStatus
+  @DynamoDBAttribute(attributeName = "VersionNote")
   String versionNote
 
   // transient
   protected Date versionDate
 
+  @Override
   def valueHashKey() {
     return name
   }
 
+  @Override
   String nameHashKey() {
     return "Name"
   }
 
+  @Override
   def valueRangeKey() {
     return version
   }
 
+  @Override
   String nameRangeKey() {
     return "Version"
   }
 
+  @Override
   void marshalAttributesIN(Item item) {
     //if (map) {
     if (item.isPresent("Name")) {
@@ -148,27 +157,7 @@ abstract class ANameVersionObject extends ADynamoObject implements ICommandObjec
     version = CalendarUtil.getStringFromDate_CONCISE(d)
   }
 
-  @DynamoDBHashKey(attributeName = "Name")
-  String getName() {
-    return name
-  }
-
-  @DynamoDBRangeKey(attributeName = "Version")
-  String getVersion() {
-    return version
-  }
-
-  @DynamoDBAttribute(attributeName = "VersionStatus")
-  String getVersionStatus() {
-    return versionStatus
-  }
-
-  @DynamoDBAttribute(attributeName = "VersionNote")
-  String getVersionNote() {
-    return versionNote
-  }
-
-  List<ANameVersionObject> findByClassAndStatus(String status) {
+  List<ANameVersionObject> findByNameAndStatus(String status) {
     String where = "VersionStatus = :myStatus"
     ValueMap valueMap = new ValueMap().withString(":myStatus", status)
 

@@ -31,7 +31,9 @@ import ikakara.awsinstance.json.FasterXMLInstance
 @ToString(includePackage=false, ignoreNulls=true, excludes="shardMapStr")
 abstract class ANameVersionShardObject extends ANameVersionObject implements IShardObject {
 
+  @DynamoDBAttribute(attributeName = "ShardCount")
   Integer shardCount = 0
+  @DynamoDBAttribute(attributeName = "ShardMap")
   String shardMapStr
 
   // shouldn't be needed but groovyc complains in concrete subclasses using @CompileStatic that there's no setter
@@ -160,13 +162,4 @@ abstract class ANameVersionShardObject extends ANameVersionObject implements ISh
     return shard
   }
 
-  @DynamoDBAttribute(attributeName = "ShardCount")
-  Integer getShardCount() {
-    return shardCount
-  }
-
-  @DynamoDBAttribute(attributeName = "ShardMap")
-  String getShardMapStr() {
-    return shardMapStr
-  }
 }
