@@ -63,5 +63,6 @@ Apache 2 License - http://www.apache.org/licenses/LICENSE-2.0
 History:
 --------------
 ```
+0.2 - merged Burt's cleanup
 0.1 - initial checkin
 ```
