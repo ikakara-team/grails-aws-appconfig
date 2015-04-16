@@ -15,9 +15,8 @@
 package ikakara.appconfig.dao.dynamo
 
 import groovy.transform.CompileStatic
+import groovy.transform.ToString
 import groovy.util.logging.Slf4j
-
-import org.apache.commons.lang.builder.ToStringBuilder
 
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBAttribute
 import com.amazonaws.services.dynamodbv2.document.Item
@@ -29,19 +28,11 @@ import ikakara.awsinstance.json.FasterXMLInstance
 
 @CompileStatic
 @Slf4j("LOG")
+@ToString(includePackage=false, ignoreNulls=true, excludes="shardMapStr")
 abstract class AClassVersionShardObject extends AClassVersionObject implements IShardObject {
 
   Integer shardCount = 0
   String shardMapStr
-
-  @Override
-  String toString() {
-    return new ToStringBuilder(this).append("class", className).append("version", version)
-    .append("status", versionStatus)
-    .append("note", versionNote)
-    .append("count", shardCount)
-    .toString()
-  }
 
   // shouldn't be needed but groovyc complains in concrete subclasses using @CompileStatic that there's no setter
   void setShardCount(Integer count) {

@@ -15,6 +15,7 @@
 package ikakara.appconfig.dao.dynamo
 
 import groovy.transform.CompileStatic
+import groovy.transform.ToString
 import groovy.util.logging.Slf4j
 
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBAttribute
@@ -29,6 +30,7 @@ import ikakara.awsinstance.dao.dynamo.ADynamoObject
 import ikakara.awsinstance.util.CalendarUtil
 
 @CompileStatic
+@ToString(includePackage=false, ignoreNulls=true)
 @Slf4j("LOG")
 abstract class AClassVersionObject extends ADynamoObject implements ICommandObject {
 
