@@ -14,55 +14,50 @@
  */
 package ikakara.appconfig.dao.shard
 
-import groovy.transform.ToString
 import groovy.transform.CompileStatic
-import groovy.util.logging.Slf4j
 
-import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.annotation.JsonIgnore
 
 import ikakara.awsinstance.dao.ICommandObject
 
-@Slf4j("LOG")
 @CompileStatic
-public class NameVersionShard extends BaseShard implements ICommandObject {
+class NameVersionShard extends BaseShard implements ICommandObject {
   // Transient
   @JsonIgnore String id_name
   @JsonIgnore String id_version
 
-  public String getNameVersionId() {
+  String getNameVersionId() {
     return id_name + "_" + id_version
   }
 
-  @Override
-  public String getId() {
+  String getId() {
     return id_name + "_" + id_version + "_" + shard
   }
 
-  @Override
-  public void setId(String id) {
-    if (id != null) {
-      String[] ids = id.split("_")
-      if (ids.length > 1) {
-        id_name = ids[0]
-        id_version = ids[1]
-        if (ids.length > 2 && !"null".equals(ids[2])) {
-          setIdShard(ids[2])
-        }
-      }
+  void setId(String id) {
+    if (id == null) {
+      return
+    }
+
+    String[] ids = id.split("_")
+    if (ids.length < 2) {
+      return
+    }
+
+    id_name = ids[0]
+    id_version = ids[1]
+    if (ids.length > 2 && "null" != ids[2]) {
+      setIdShard(ids[2])
     }
   }
 
-  @Override
-  public void initParameters(Map params) {
-    //if (params != null && !params.isEmpty()) {
-    setIdShard((String) params.get("shard"))
+  void initParameters(Map params) {
+    //if (params) {
+    setIdShard((String) params.shard)
     //}
   }
 
-  @Override
-  public boolean validate() {
+  boolean validate() {
     return true // needed to be used as "command object"
   }
-
 }

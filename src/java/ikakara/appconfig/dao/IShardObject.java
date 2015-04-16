@@ -28,9 +28,12 @@ public interface IShardObject {
 
   void setShardMapStr(String name);
 
+  @SuppressWarnings("rawtypes")
   Map getShardMap();
 
+  @SuppressWarnings("rawtypes")
   void setShardMap(Map sm);
 
+  @SuppressWarnings("rawtypes")
   TypeReference typeReference();
 }

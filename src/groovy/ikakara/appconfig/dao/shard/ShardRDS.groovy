@@ -14,27 +14,24 @@
  */
 package ikakara.appconfig.dao.shard
 
-import groovy.transform.ToString
-import groovy.util.logging.Slf4j
-
 import grails.compiler.GrailsCompileStatic
 import grails.validation.Validateable
 import grails.validation.ValidationErrors
-import org.springframework.validation.DefaultMessageCodesResolver
+import groovy.transform.ToString
+import groovy.util.logging.Slf4j
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect
-import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility
 import com.fasterxml.jackson.annotation.JsonProperty
-import com.fasterxml.jackson.annotation.JsonIgnore
+import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility
 
 import ikakara.appconfig.dao.rdb.SQLDescriptor
 
+@GrailsCompileStatic
 @JsonAutoDetect(fieldVisibility = Visibility.NONE, getterVisibility = Visibility.NONE)
+@Slf4j("LOG")
 @ToString(includePackage=false, ignoreNulls=true, excludes="username,password")
 @Validateable
-@Slf4j("LOG")
-@GrailsCompileStatic
-public class ShardRDS extends NameVersionShard {
+class ShardRDS extends NameVersionShard {
   // http://www.sql-workbench.net/manual/jdbc-setup.html
   // id_shard
   @JsonProperty String driverClassName
@@ -55,49 +52,49 @@ public class ShardRDS extends NameVersionShard {
   }
 
   @Override
-  public void initParameters(Map params) {
-    if (params != null && !params.isEmpty()) {
+  void initParameters(Map params) {
+    if (params) {
       super.initParameters(params)
-      driverClassName = (String) params.get("driverClassName")
-      url = (String) params.get("url")
-      db = (String) params.get("db")
-      username = (String) params.get("username")
-      password = (String) params.get("password")
-      options = (String) params.get("options")
+      driverClassName = (String) params.driverClassName
+      url = (String) params.url
+      db = (String) params.db
+      username = (String) params.username
+      password = (String) params.password
+      options = (String) params.options
     }
   }
 
-  public ShardRDS() {
+  ShardRDS() {
 
   }
 
-  public ShardRDS(Map params) {
+  ShardRDS(Map params) {
     initParameters(params)
   }
 
-  public String prettyPrint() {
+  String prettyPrint() {
     return shard + " - " + url_db_options()
   }
 
-  public String url_db() {
+  String url_db() {
     return ShardRDS.URL_DB(url, db)
   }
 
-  public String url_db_options() {
+  String url_db_options() {
     def sb = url_db()
     if(options) {
-      sb = sb + "?" + options
+      sb += "?" + options
     }
     return sb
   }
 
-  static public String URL_DB(String url, String db) {
+  static String URL_DB(String url, String db) {
     return url + "/" + db
   }
 
   // Rewrite to be @Immutable, tuple
 
-  static public SQLDescriptor sql_descriptor(HashMap<String, String> shard) {
+  static SQLDescriptor sql_descriptor(HashMap<String, String> shard) {
     SQLDescriptor des = new SQLDescriptor(
       shard.driverClassName,
       ShardRDS.URL_DB(shard.url, shard.db),
@@ -108,15 +105,13 @@ public class ShardRDS extends NameVersionShard {
     return des
   }
 
-  static public SQLDescriptor sql_descriptor(ShardRDS shard) {
-    SQLDescriptor des = new SQLDescriptor(
+  static SQLDescriptor sql_descriptor(ShardRDS shard) {
+    return new SQLDescriptor(
       shard.driverClassName,
       shard.url_db(),
       shard.username,
       shard.password,
       shard.options ?: null
     )
-    return des
   }
-
 }

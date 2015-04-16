@@ -1,4 +1,3 @@
-<%@ page import="ikakara.appconfig.dao.dynamo.ConfigRDS" %>
 <!DOCTYPE html>
 <html>
   <head>

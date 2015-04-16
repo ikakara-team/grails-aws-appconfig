@@ -14,12 +14,9 @@
  */
 package ikakara.appconfig.dao.dynamo
 
-import java.util.Map
-
+import grails.validation.Validateable
 import groovy.transform.CompileStatic
 import groovy.util.logging.Slf4j
-
-import grails.validation.Validateable
 
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBAttribute
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBIgnore
@@ -28,45 +25,36 @@ import com.fasterxml.jackson.core.type.TypeReference
 
 import ikakara.appconfig.dao.shard.ShardRDS
 
-@Validateable(nullable = true)
-@Slf4j("LOG")
 @CompileStatic
-public class ConfigRDS extends AConfigBase {
+@Slf4j("LOG")
+@Validateable(nullable = true)
+class ConfigRDS extends AConfigBase {
 
-  static public final String CONFIG_TYPE = "RDS"
+  public static final String CONFIG_TYPE = "RDS"
 
-  @Override
   @DynamoDBAttribute(attributeName = "ConfigType")
-  public String getType() {
+  String getType() {
     return CONFIG_TYPE
   }
 
   Map<Integer, ShardRDS> shardMap
 
-  @Override
   @DynamoDBIgnore
-  public Map getShardMap() {
+  Map getShardMap() {
     return shardMap
   }
 
-  @Override
-  public void setShardMap(Map sm) {
-    shardMap = sm
-  }
-
-  @Override
   @DynamoDBIgnore
-  public TypeReference typeReference() {
+  TypeReference typeReference() {
     return new TypeReference<Map<Integer, ShardRDS>>(){}
   }
 
-  public ConfigRDS() {
+  ConfigRDS() {
     super()
   }
 
-  public ConfigRDS(Map params) {
+  ConfigRDS(Map params) {
     super()
     initParameters(params)
   }
-
 }

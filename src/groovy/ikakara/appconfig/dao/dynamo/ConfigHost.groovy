@@ -14,59 +14,46 @@
  */
 package ikakara.appconfig.dao.dynamo
 
-import java.util.Map
-
+import grails.validation.Validateable
 import groovy.transform.CompileStatic
 import groovy.util.logging.Slf4j
 
-import grails.validation.Validateable
-
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBAttribute
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBIgnore
-
 import com.fasterxml.jackson.core.type.TypeReference
 
 import ikakara.appconfig.dao.shard.ShardHost
 
-@Validateable(nullable = true)
-@Slf4j("LOG")
 @CompileStatic
-public class ConfigHost extends AConfigBase {
+@Slf4j("LOG")
+@Validateable(nullable = true)
+class ConfigHost extends AConfigBase {
 
-  static public final String CONFIG_TYPE = "Host"
+  public static final String CONFIG_TYPE = "Host"
 
-  @Override
   @DynamoDBAttribute(attributeName = "ConfigType")
-  public String getType() {
+  String getType() {
     return CONFIG_TYPE
   }
 
   Map<Integer, ShardHost> shardMap
 
-  @Override
   @DynamoDBIgnore
-  public Map getShardMap() {
+  Map getShardMap() {
     return shardMap
   }
 
-  @Override
-  public void setShardMap(Map sm) {
-    shardMap = sm
-  }
-
-  @Override
   @DynamoDBIgnore
-  public TypeReference typeReference() {
+  TypeReference typeReference() {
     return new TypeReference<Map<Integer, ShardHost>>(){}
   }
 
-  public ConfigHost() {
+  ConfigHost() {
     super()
   }
 
-  public ConfigHost(Map params) {
+  ConfigHost(Map params) {
     super()
     initParameters(params)
   }
-
 }

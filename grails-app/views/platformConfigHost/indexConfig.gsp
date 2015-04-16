@@ -1,4 +1,3 @@
-<%@ page import="ikakara.appconfig.dao.dynamo.ConfigHost" %>
 <!DOCTYPE html>
 <html>
   <head>

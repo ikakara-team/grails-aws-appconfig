@@ -28,9 +28,7 @@ class PlatformConfigRDSController {
     saveConfig: "POST", updateConfig: "PUT", deleteConfig: "DELETE",
     saveShard: "POST", updateShard: "PUT", deleteShard: "DELETE"]
 
-  def index(Integer max) {
-    redirect action: 'indexConfig'
-  }
+  static defaultAction = 'indexConfig'
 
   //////////////////////////////////////////////////////////////////////////////
   // ConfigRDS
@@ -38,31 +36,28 @@ class PlatformConfigRDSController {
 
   def indexConfig(Integer max) {
     params.max = Math.min(max ?: 10, 100)
-    List results = new ConfigRDS().findByType();
-    int count = results != null ? results.size() : 0;
+    List results = new ConfigRDS().findByType()
+    int count = results?.size() ?: 0
     //render view: 'indexConfig', model:[configRDSInstanceList: results, configRDSInstanceCount: count]
     respond results, model:[configRDSInstanceCount: count]
   }
 
   def showConfig(ConfigRDS configRDSInstance) {
     if(params.id) {
-      configRDSInstance.setId(params.id);
+      configRDSInstance.id = params.id
     }
 
-    configRDSInstance.load();
-    configRDSInstance.fromJSON();
+    configRDSInstance.load()
+    configRDSInstance.fromJSON()
     respond configRDSInstance
   }
 
   def createConfig() {
-    def config = new ConfigRDS(params);
-    List results = null;
-
-    render view: 'createConfig', model:[configRDSInstance: config, versionRDSInstanceList: results]
+    render view: 'createConfig', model:[configRDSInstance: new ConfigRDS(params)]
   }
 
   def saveConfig(ConfigRDS configRDSInstance) {
-    if (configRDSInstance == null) {
+    if (!configRDSInstance) {
       notFoundConfig()
       return
     }
@@ -72,40 +67,37 @@ class PlatformConfigRDSController {
       return
     }
 
-    boolean bcreated = configRDSInstance.create()
-    if(!bcreated) {
-      flash.message = "Failed to create: ${configRDSInstance.getId()}"
+    boolean created = configRDSInstance.create()
+    if(!created) {
+      flash.message = "Failed to create: $configRDSInstance.id"
       render view: 'createApp', model:[configRDSInstance: configRDSInstance]
       return
     }
 
     request.withFormat {
       form multipartForm {
-        flash.message = message(code: 'default.created.message', args: [message(code: 'adminConfig.label', default: 'ConfigRDS'), configRDSInstance.getId()])
-        redirect action: 'showConfig', id: configRDSInstance.getId()
+        flash.message = message(code: 'default.created.message', args: [message(code: 'adminConfig.label', default: 'ConfigRDS'), configRDSInstance.id])
+        redirect action: 'showConfig', id: configRDSInstance.id
       }
       '*' { respond configRDSInstance, [status: CREATED] }
     }
   }
 
   def editConfig(ConfigRDS configRDSInstance) {
-    if(params.id) {
-      configRDSInstance.setId(params.id);
-    } else {
-      response.sendError(404);
-      return;
+    if(!params.id) {
+      response.sendError(404)
+      return
     }
 
-    configRDSInstance.load();
-    configRDSInstance.fromJSON();
+    configRDSInstance.id = params.id
+    configRDSInstance.load()
+    configRDSInstance.fromJSON()
 
-    List results = null;
-
-    render view: 'editConfig', model:[configRDSInstance: configRDSInstance, versionRDSInstanceList: results]
+    render view: 'editConfig', model:[configRDSInstance: configRDSInstance]
   }
 
   def updateConfig(ConfigRDS configRDSInstance) {
-    if (configRDSInstance == null) {
+    if (!configRDSInstance) {
       notFoundConfig()
       return
     }
@@ -119,28 +111,28 @@ class PlatformConfigRDSController {
 
     request.withFormat {
       form multipartForm {
-        flash.message = message(code: 'default.updated.message', args: [message(code: 'ConfigRDS.label', default: 'ConfigRDS'), configRDSInstance.getId()])
-        redirect action: 'showConfig', id: configRDSInstance.getId()
+        flash.message = message(code: 'default.updated.message', args: [message(code: 'ConfigRDS.label', default: 'ConfigRDS'), configRDSInstance.id])
+        redirect action: 'showConfig', id: configRDSInstance.id
       }
       '*'{ respond configRDSInstance, [status: OK] }
     }
   }
 
   def deleteConfig(ConfigRDS configRDSInstance) {
-    if (configRDSInstance == null) {
+    if (!configRDSInstance) {
       notFoundConfig()
       return
     }
 
     if(params.id) {
-      configRDSInstance.setId(params.id);
+      configRDSInstance.id = params.id
     }
 
     configRDSInstance.delete()
 
     request.withFormat {
       form multipartForm {
-        flash.message = message(code: 'default.deleted.message', args: [message(code: 'ConfigRDS.label', default: 'ConfigRDS'), configRDSInstance.getId()])
+        flash.message = message(code: 'default.deleted.message', args: [message(code: 'ConfigRDS.label', default: 'ConfigRDS'), configRDSInstance.id])
         redirect action:"indexConfig", method:"GET"
       }
       '*'{ render status: NO_CONTENT }
@@ -162,16 +154,16 @@ class PlatformConfigRDSController {
   //////////////////////////////////////////////////////////////////////////////
 
   def showShard(ShardRDS shardRDSInstance) {
-    ConfigRDS configRDSInstance = new ConfigRDS();
-    if(params.id) {
-      shardRDSInstance.setId(params.id);
-      configRDSInstance.setId(params.id);
-    } else {
-      response.sendError(404);
-      return;
+    if(!params.id) {
+      response.sendError(404)
+      return
     }
 
-    configRDSInstance.load();
+    ConfigRDS configRDSInstance = new ConfigRDS()
+    shardRDSInstance.id = params.id
+    configRDSInstance.id = params.id
+
+    configRDSInstance.load()
     shardRDSInstance = configRDSInstance.findShard(shardRDSInstance.shard)
 
     respond shardRDSInstance
@@ -180,20 +172,20 @@ class PlatformConfigRDSController {
   def createShard() {
     log.info params
 
-    def shardRDSInstance = new ShardRDS();
-    shardRDSInstance.initParameters(params);
+    def shardRDSInstance = new ShardRDS()
+    shardRDSInstance.initParameters(params)
 
     if(params.id) {
-      shardRDSInstance.setId(params.id);
+      shardRDSInstance.id = params.id
     }
 
-    List configRDSInstanceList = new ConfigRDS().findByType();
+    List configRDSInstanceList = new ConfigRDS().findByType()
 
     render view: 'createShard', model:[shardRDSInstance: shardRDSInstance, configRDSInstanceList: configRDSInstanceList]
   }
 
   def saveShard(ShardRDS shardRDSInstance) {
-    if (shardRDSInstance == null) {
+    if (!shardRDSInstance) {
       notFoundShard()
       return
     }
@@ -203,36 +195,36 @@ class PlatformConfigRDSController {
       return
     }
 
-    saveConfigShard(shardRDSInstance.getId(), shardRDSInstance.shard, shardRDSInstance);
+    saveConfigShard(shardRDSInstance.id, shardRDSInstance.shard, shardRDSInstance)
 
     request.withFormat {
       form multipartForm {
-        flash.message = message(code: 'default.created.message', args: [message(code: 'adminConfig.label', default: 'ShardRDS'), shardRDSInstance.getId()])
-        redirect action: 'showShard', id: shardRDSInstance.getId()
+        flash.message = message(code: 'default.created.message', args: [message(code: 'adminConfig.label', default: 'ShardRDS'), shardRDSInstance.id])
+        redirect action: 'showShard', id: shardRDSInstance.id
       }
       '*' { respond shardRDSInstance, [status: CREATED] }
     }
   }
 
   def editShard(ShardRDS shardRDSInstance) {
-    ConfigRDS configRDSInstance = new ConfigRDS();
-    if(params.id) {
-      shardRDSInstance.setId(params.id);
-      configRDSInstance.setId(params.id);
-    } else {
-      response.sendError(404);
-      return;
+    if(!params.id) {
+      response.sendError(404)
+      return
     }
 
-    configRDSInstance.load();
+    ConfigRDS configRDSInstance = new ConfigRDS()
+    shardRDSInstance.id = params.id
+    configRDSInstance.id = params.id
+
+    configRDSInstance.load()
     shardRDSInstance = configRDSInstance.findShard(shardRDSInstance.shard)
 
-    List configRDSInstanceList = new ConfigRDS().findByType();
+    List configRDSInstanceList = new ConfigRDS().findByType()
     render view: 'editShard', model:[shardRDSInstance: shardRDSInstance, configRDSInstanceList: configRDSInstanceList]
   }
 
   def updateShard(ShardRDS shardRDSInstance) {
-    if (shardRDSInstance == null) {
+    if (!shardRDSInstance) {
       notFoundShard()
       return
     }
@@ -242,46 +234,48 @@ class PlatformConfigRDSController {
       return
     }
 
-    saveConfigShard(shardRDSInstance.getId(), shardRDSInstance.shard, shardRDSInstance);
+    saveConfigShard(shardRDSInstance.id, shardRDSInstance.shard, shardRDSInstance)
 
     request.withFormat {
       form multipartForm {
-        flash.message = message(code: 'default.updated.message', args: [message(code: 'ShardRDS.label', default: 'ShardRDS'), shardRDSInstance.getId()])
-        redirect action: 'showShard', id: shardRDSInstance.getId()
+        flash.message = message(code: 'default.updated.message', args: [message(code: 'ShardRDS.label', default: 'ShardRDS'), shardRDSInstance.id])
+        redirect action: 'showShard', id: shardRDSInstance.id
       }
       '*'{ respond shardRDSInstance, [status: OK] }
     }
   }
 
   def deleteShard(ShardRDS shardRDSInstance) {
-    if (shardRDSInstance == null) {
+    if (!shardRDSInstance) {
       notFoundShard()
       return
     }
 
     if(params.id) {
-      shardRDSInstance.setId(params.id);
+      shardRDSInstance.id = params.id
     }
 
-    saveConfigShard(shardRDSInstance.getId(), shardRDSInstance.shard, null);
+    saveConfigShard(shardRDSInstance.id, shardRDSInstance.shard, null)
 
     request.withFormat {
       form multipartForm {
-        flash.message = message(code: 'default.deleted.message', args: [message(code: 'ShardRDS.label', default: 'ShardRDS'), shardRDSInstance.getId()])
-        redirect action:"showConfig", method:"GET", id: shardRDSInstance.getId()
+        flash.message = message(code: 'default.deleted.message', args: [message(code: 'ShardRDS.label', default: 'ShardRDS'), shardRDSInstance.id])
+        redirect action:"showConfig", method:"GET", id: shardRDSInstance.id
       }
       '*'{ render status: NO_CONTENT }
     }
   }
 
   protected void saveConfigShard(String id, Integer shard, ShardRDS shardRDSInstance) {
-    if(id) {
-      ConfigRDS configRDSInstance = new ConfigRDS();
-      configRDSInstance.setId(id);
-      configRDSInstance.load();
-      configRDSInstance.replaceShard(shard, shardRDSInstance);
-      configRDSInstance.save();
+    if(!id) {
+      return
     }
+
+    ConfigRDS configRDSInstance = new ConfigRDS()
+    configRDSInstance.id = id
+    configRDSInstance.load()
+    configRDSInstance.replaceShard(shard, shardRDSInstance)
+    configRDSInstance.save()
   }
 
   protected void notFoundShard() {

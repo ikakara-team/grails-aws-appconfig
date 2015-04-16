@@ -1,4 +1,3 @@
-<%@ page import="ikakara.appconfig.dao.dynamo.ConfigHost" %>
 <div class="fieldcontain ${hasErrors(bean: configHostInstance, field: 'className', 'error')} required">
   <label for="className">
     <g:message code="configHost.className.label" default="Class Name" />

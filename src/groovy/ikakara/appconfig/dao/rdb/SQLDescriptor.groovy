@@ -14,12 +14,14 @@
  */
 package ikakara.appconfig.dao.rdb
 
+import groovy.transform.CompileStatic
 import groovy.transform.Immutable
 import groovy.transform.ToString
 
-@ToString(includePackage=false, excludes="username,password")
+@CompileStatic
 @Immutable
-public class SQLDescriptor {
+@ToString(includePackage=false, excludes="username,password")
+class SQLDescriptor {
   String driverClassName
   String url
   String username

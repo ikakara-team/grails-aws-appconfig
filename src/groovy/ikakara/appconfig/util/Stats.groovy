@@ -19,9 +19,9 @@ import java.text.DecimalFormat
 import groovy.transform.CompileStatic
 import groovy.util.logging.Slf4j
 
-@Slf4j("LOG")
 @CompileStatic
-public class Stats {
+@Slf4j("LOG")
+class Stats {
   static final int KEEP_RATIO = 2
 
   long start = System.currentTimeMillis()
@@ -29,16 +29,16 @@ public class Stats {
   int events = 0
   String name
 
-  public Stats(String name) {
+  Stats(String name) {
     this.name = name
   }
 
-  public synchronized void add(long duration) {
+  synchronized void add(long duration) {
     total_time += duration
     events++
   }
 
-  public synchronized Info get() {
+  synchronized Info get() {
     long end = System.currentTimeMillis()
     double dt = (end - start) / 1000.0
     Info ret
@@ -53,20 +53,19 @@ public class Stats {
     return ret
   }
 
-  public class Info {
-    public double ave_time
+  class Info {
+    double ave_time
     double events_per_sec
 
-    public Info(double ave_time, double events_per_sec) {
+    Info(double ave_time, double events_per_sec) {
       this.ave_time = ave_time
       this.events_per_sec = events_per_sec
     }
 
     @Override
-    public String toString() {
+    String toString() {
       final DecimalFormat df = new DecimalFormat("0.000")
       return "Info [name=" + name + " ave_time=" + df.format(ave_time) + ", events_per_sec=" + df.format(events_per_sec) + "]"
     }
-
   }
 }

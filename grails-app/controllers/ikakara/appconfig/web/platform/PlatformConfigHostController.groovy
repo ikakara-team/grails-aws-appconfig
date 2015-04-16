@@ -28,9 +28,7 @@ class PlatformConfigHostController {
     saveConfig: "POST", updateConfig: "PUT", deleteConfig: "DELETE",
     saveShard: "POST", updateShard: "PUT", deleteShard: "DELETE"]
 
-  def index(Integer max) {
-    redirect action: 'indexConfig'
-  }
+  static defaultAction = 'indexConfig'
 
   //////////////////////////////////////////////////////////////////////////////
   // ConfigHost
@@ -38,30 +36,27 @@ class PlatformConfigHostController {
 
   def indexConfig(Integer max) {
     params.max = Math.min(max ?: 10, 100)
-    List results = new ConfigHost().findByType();
-    int count = results != null ? results.size() : 0;
+    List results = new ConfigHost().findByType()
+    int count = results?.size() ?: 0
     render view: 'indexConfig', model:[configHostInstanceList: results, configHostInstanceCount: count]
   }
 
   def showConfig(ConfigHost configHostInstance) {
     if(params.id) {
-      configHostInstance.setId(params.id);
+      configHostInstance.id = params.id
     }
 
-    configHostInstance.load();
-    configHostInstance.fromJSON();
+    configHostInstance.load()
+    configHostInstance.fromJSON()
     respond configHostInstance
   }
 
   def createConfig() {
-    def config = new ConfigHost(params);
-    List results = null;
-
-    render view: 'createConfig', model:[configHostInstance: config, versionRDSInstanceList: results]
+    render view: 'createConfig', model:[configHostInstance: new ConfigHost(params)]
   }
 
   def saveConfig(ConfigHost configHostInstance) {
-    if (configHostInstance == null) {
+    if (!configHostInstance) {
       notFoundConfig()
       return
     }
@@ -71,40 +66,37 @@ class PlatformConfigHostController {
       return
     }
 
-    boolean bcreated = configHostInstance.create()
-    if(!bcreated) {
-      flash.message = "Failed to create: ${configHostInstance.getId()}"
+    boolean created = configHostInstance.create()
+    if(!created) {
+      flash.message = "Failed to create: $configHostInstance.id"
       render view: 'createApp', model:[configHostInstance: configHostInstance]
       return
     }
 
     request.withFormat {
       form multipartForm {
-        flash.message = message(code: 'default.created.message', args: [message(code: 'adminConfig.label', default: 'ConfigHost'), configHostInstance.getId()])
-        redirect action: 'showConfig', id: configHostInstance.getId()
+        flash.message = message(code: 'default.created.message', args: [message(code: 'adminConfig.label', default: 'ConfigHost'), configHostInstance.id])
+        redirect action: 'showConfig', id: configHostInstance.id
       }
       '*' { respond configHostInstance, [status: CREATED] }
     }
   }
 
   def editConfig(ConfigHost configHostInstance) {
-    if(params.id) {
-      configHostInstance.setId(params.id);
-    } else {
-      response.sendError(404);
-      return;
+    if(!params.id) {
+      response.sendError(404)
+      return
     }
 
-    configHostInstance.load();
-    configHostInstance.fromJSON();
+    configHostInstance.id = params.id
+    configHostInstance.load()
+    configHostInstance.fromJSON()
 
-    List results = null;
-
-    render view: 'editConfig', model:[configHostInstance: configHostInstance, versionRDSInstanceList: results]
+    render view: 'editConfig', model:[configHostInstance: configHostInstance]
   }
 
   def updateConfig(ConfigHost configHostInstance) {
-    if (configHostInstance == null) {
+    if (!configHostInstance) {
       notFoundConfig()
       return
     }
@@ -118,28 +110,28 @@ class PlatformConfigHostController {
 
     request.withFormat {
       form multipartForm {
-        flash.message = message(code: 'default.updated.message', args: [message(code: 'ConfigHost.label', default: 'ConfigHost'), configHostInstance.getId()])
-        redirect action: 'showConfig', id: configHostInstance.getId()
+        flash.message = message(code: 'default.updated.message', args: [message(code: 'ConfigHost.label', default: 'ConfigHost'), configHostInstance.id])
+        redirect action: 'showConfig', id: configHostInstance.id
       }
       '*'{ respond configHostInstance, [status: OK] }
     }
   }
 
   def deleteConfig(ConfigHost configHostInstance) {
-    if (configHostInstance == null) {
+    if (!configHostInstance) {
       notFoundConfig()
       return
     }
 
     if(params.id) {
-      configHostInstance.setId(params.id);
+      configHostInstance.id = params.id
     }
 
     configHostInstance.delete()
 
     request.withFormat {
       form multipartForm {
-        flash.message = message(code: 'default.deleted.message', args: [message(code: 'ConfigHost.label', default: 'ConfigHost'), configHostInstance.getId()])
+        flash.message = message(code: 'default.deleted.message', args: [message(code: 'ConfigHost.label', default: 'ConfigHost'), configHostInstance.id])
         redirect action:"indexConfig", method:"GET"
       }
       '*'{ render status: NO_CONTENT }
@@ -161,16 +153,16 @@ class PlatformConfigHostController {
   //////////////////////////////////////////////////////////////////////////////
 
   def showShard(ShardHost shardHostInstance) {
-    ConfigHost configHostInstance = new ConfigHost();
-    if(params.id) {
-      shardHostInstance.setId(params.id);
-      configHostInstance.setId(params.id);
-    } else {
-      response.sendError(404);
-      return;
+    ConfigHost configHostInstance = new ConfigHost()
+    if(!params.id) {
+      response.sendError(404)
+      return
     }
 
-    configHostInstance.load();
+    shardHostInstance.id = params.id
+    configHostInstance.id = params.id
+
+    configHostInstance.load()
     shardHostInstance = configHostInstance.findShard(shardHostInstance.shard)
 
     respond shardHostInstance
@@ -179,20 +171,20 @@ class PlatformConfigHostController {
   def createShard() {
     log.info params
 
-    def shardHostInstance = new ShardHost();
-    shardHostInstance.initParameters(params);
+    def shardHostInstance = new ShardHost()
+    shardHostInstance.initParameters(params)
 
     if(params.id) {
-      shardHostInstance.setId(params.id);
+      shardHostInstance.id = params.id
     }
 
-    List configHostInstanceList = new ConfigHost().findByType();
+    List configHostInstanceList = new ConfigHost().findByType()
 
     render view: 'createShard', model:[shardHostInstance: shardHostInstance, configHostInstanceList: configHostInstanceList]
   }
 
   def saveShard(ShardHost shardHostInstance) {
-    if (shardHostInstance == null) {
+    if (!shardHostInstance) {
       notFoundShard()
       return
     }
@@ -202,36 +194,36 @@ class PlatformConfigHostController {
       return
     }
 
-    saveConfigShard(shardHostInstance.getId(), shardHostInstance.shard, shardHostInstance);
+    saveConfigShard(shardHostInstance.id, shardHostInstance.shard, shardHostInstance)
 
     request.withFormat {
       form multipartForm {
-        flash.message = message(code: 'default.created.message', args: [message(code: 'adminConfig.label', default: 'ShardHost'), shardHostInstance.getId()])
-        redirect action: 'showShard', id: shardHostInstance.getId()
+        flash.message = message(code: 'default.created.message', args: [message(code: 'adminConfig.label', default: 'ShardHost'), shardHostInstance.id])
+        redirect action: 'showShard', id: shardHostInstance.id
       }
       '*' { respond shardHostInstance, [status: CREATED] }
     }
   }
 
   def editShard(ShardHost shardHostInstance) {
-    ConfigHost configHostInstance = new ConfigHost();
-    if(params.id) {
-      shardHostInstance.setId(params.id);
-      configHostInstance.setId(params.id);
-    } else {
-      response.sendError(404);
-      return;
+    ConfigHost configHostInstance = new ConfigHost()
+    if(!params.id) {
+      response.sendError(404)
     }
 
-    configHostInstance.load();
+    return
+    shardHostInstance.id = params.id
+    configHostInstance.id = params.id
+
+    configHostInstance.load()
     shardHostInstance = configHostInstance.findShard(shardHostInstance.shard)
 
-    List configHostInstanceList = new ConfigHost().findByType();
+    List configHostInstanceList = new ConfigHost().findByType()
     render view: 'editShard', model:[shardHostInstance: shardHostInstance, configHostInstanceList: configHostInstanceList]
   }
 
   def updateShard(ShardHost shardHostInstance) {
-    if (shardHostInstance == null) {
+    if (!shardHostInstance) {
       notFoundShard()
       return
     }
@@ -241,46 +233,48 @@ class PlatformConfigHostController {
       return
     }
 
-    saveConfigShard(shardHostInstance.getId(), shardHostInstance.shard, shardHostInstance);
+    saveConfigShard(shardHostInstance.id, shardHostInstance.shard, shardHostInstance)
 
     request.withFormat {
       form multipartForm {
-        flash.message = message(code: 'default.updated.message', args: [message(code: 'ShardHost.label', default: 'ShardHost'), shardHostInstance.getId()])
-        redirect action: 'showShard', id: shardHostInstance.getId()
+        flash.message = message(code: 'default.updated.message', args: [message(code: 'ShardHost.label', default: 'ShardHost'), shardHostInstance.id])
+        redirect action: 'showShard', id: shardHostInstance.id
       }
       '*'{ respond shardHostInstance, [status: OK] }
     }
   }
 
   def deleteShard(ShardHost shardHostInstance) {
-    if (shardHostInstance == null) {
+    if (!shardHostInstance) {
       notFoundShard()
       return
     }
 
     if(params.id) {
-      shardHostInstance.setId(params.id);
+      shardHostInstance.id = params.id
     }
 
-    saveConfigShard(shardHostInstance.getId(), shardHostInstance.shard, null);
+    saveConfigShard(shardHostInstance.id, shardHostInstance.shard, null)
 
     request.withFormat {
       form multipartForm {
-        flash.message = message(code: 'default.deleted.message', args: [message(code: 'ShardHost.label', default: 'ShardHost'), shardHostInstance.getId()])
-        redirect action:"showConfig", method:"GET", id: shardHostInstance.getId()
+        flash.message = message(code: 'default.deleted.message', args: [message(code: 'ShardHost.label', default: 'ShardHost'), shardHostInstance.id])
+        redirect action:"showConfig", method:"GET", id: shardHostInstance.id
       }
       '*'{ render status: NO_CONTENT }
     }
   }
 
   protected void saveConfigShard(String id, Integer shard, ShardHost shardHostInstance) {
-    if(id) {
-      ConfigHost configHostInstance = new ConfigHost();
-      configHostInstance.setId(id);
-      configHostInstance.load();
-      configHostInstance.replaceShard(shard, shardHostInstance);
-      configHostInstance.save();
+    if(!id) {
+      return
     }
+
+    ConfigHost configHostInstance = new ConfigHost()
+    configHostInstance.id = id
+    configHostInstance.load()
+    configHostInstance.replaceShard(shard, shardHostInstance)
+    configHostInstance.save()
   }
 
   protected void notFoundShard() {

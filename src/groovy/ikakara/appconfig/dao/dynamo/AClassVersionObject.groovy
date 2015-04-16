@@ -14,12 +14,8 @@
  */
 package ikakara.appconfig.dao.dynamo
 
-import java.util.Date
-import java.util.List
-import java.util.Map
-
-import groovy.transform.ToString
 import groovy.transform.CompileStatic
+import groovy.transform.ToString
 import groovy.util.logging.Slf4j
 
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBAttribute
@@ -33,54 +29,41 @@ import ikakara.awsinstance.dao.ICommandObject
 import ikakara.awsinstance.dao.dynamo.ADynamoObject
 import ikakara.awsinstance.util.CalendarUtil
 
+@CompileStatic
 @ToString(includePackage=false, ignoreNulls=true)
 @Slf4j("LOG")
-@CompileStatic
-abstract public class AClassVersionObject extends ADynamoObject implements ICommandObject {
+abstract class AClassVersionObject extends ADynamoObject implements ICommandObject {
 
-  static public final String STATUS_UNKNOWN = "UNKNOWN"
-  static public final String STATUS_ACTIVE = "ACTIVE"
-  static public final String STATUS_INACTIVE = "INACTIVE"
+  public static final String STATUS_UNKNOWN = "UNKNOWN"
+  public static final String STATUS_ACTIVE = "ACTIVE"
+  public static final String STATUS_INACTIVE = "INACTIVE"
 
-  protected String className
-  protected String version // YYMMddHHmmss
-  protected String versionStatus
-  protected String versionNote
+  String className
+  String version // YYMMddHHmmss
+  String versionStatus
+  String versionNote
+
   // transient
-  protected Date versionDate = null
+  protected Date versionDate
 
-  @Override
-  abstract public ADynamoObject newInstance(Item item)
-
-  @Override
-  abstract public String tableName()
-
-  @Override
-  abstract public Map initTable()
-
-  @Override
-  public Object valueHashKey() {
+  def valueHashKey() {
     return className
   }
 
-  @Override
-  public String nameHashKey() {
+  String nameHashKey() {
     return "ClassName"
   }
 
-  @Override
-  public Object valueRangeKey() {
+  def valueRangeKey() {
     return version
   }
 
-  @Override
-  public String nameRangeKey() {
+  String nameRangeKey() {
     return "Version"
   }
 
-  @Override
-  public void marshalAttributesIN(Item item) {
-    //if (map != null && !map.isEmpty()) {
+  void marshalAttributesIN(Item item) {
+    //if (map) {
     if (item.isPresent("ClassName")) {
       className = item.getString("ClassName")
     }
@@ -97,17 +80,17 @@ abstract public class AClassVersionObject extends ADynamoObject implements IComm
   }
 
   @Override
-  public Item marshalItemOUT(boolean bRemoveAttributeNull) {
+  Item marshalItemOUT(boolean removeAttributeNull) {
     Item outItem = new Item()
 
-    if (versionStatus != null && !"".equals(versionStatus)) {
+    if (versionStatus) {
       outItem = outItem.withString("VersionStatus", versionStatus)
-    } else if (bRemoveAttributeNull) {
+    } else if (removeAttributeNull) {
       outItem = outItem.removeAttribute("VersionStatus")
     }
-    if (versionNote != null && !"".equals(versionNote)) {
+    if (versionNote) {
       outItem = outItem.withString("VersionNote", versionNote)
-    } else if (bRemoveAttributeNull) {
+    } else if (removeAttributeNull) {
       outItem = outItem.removeAttribute("VersionNote")
     }
 
@@ -116,39 +99,41 @@ abstract public class AClassVersionObject extends ADynamoObject implements IComm
 
   @DynamoDBIgnore
   @Override
-  public String getId() {
+  String getId() {
     return getClassName() + "_" + getVersion()
   }
 
   @Override
-  public void setId(String id) {
-    if (id != null) {
-      String[] ids = id.split("_")
-      if (ids.length > 1) {
-        setClassName(ids[0])
-        setVersion(ids[1])
-      }
+  void setId(String id) {
+    if (!id) {
+      return
+    }
+
+    String[] ids = id.split("_")
+    if (ids.length > 1) {
+      setClassName(ids[0])
+      setVersion(ids[1])
     }
   }
 
   @Override
-  public void initParameters(Map params) {
-    //if (params != null && !params.isEmpty()) {
-    className = (String) params.get("className")
-    version = (String) params.get("version")
-    versionStatus = (String) params.get("versionStatus")
-    versionNote = (String) params.get("versionNote")
+  void initParameters(Map params) {
+    //if (params) {
+    className = (String) params.className
+    version = (String) params.version
+    versionStatus = (String) params.versionStatus
+    versionNote = (String) params.versionNote
     //}
   }
 
   @Override
-  public boolean validate() {
+  boolean validate() {
     return true // needed to be used as "command object"
   }
 
   @DynamoDBIgnore
-  public Date getVersionDate() {
-    if (versionDate == null) {
+  Date getVersionDate() {
+    if (!versionDate) {
       if (version != null) {
         versionDate = CalendarUtil.getDateFromString_CONCISE(version)
       } else {
@@ -158,53 +143,35 @@ abstract public class AClassVersionObject extends ADynamoObject implements IComm
     return versionDate
   }
 
-  public void setVersionDate(Date d) {
+  void setVersionDate(Date d) {
     versionDate = d
     version = CalendarUtil.getStringFromDate_CONCISE(d)
   }
 
   @DynamoDBHashKey(attributeName = "ClassName")
-  public String getClassName() {
+  String getClassName() {
     return className
   }
 
-  public void setClassName(String name) {
-    className = name
-  }
-
   @DynamoDBRangeKey(attributeName = "Version")
-  public String getVersion() {
+  String getVersion() {
     return version
   }
 
-  public void setVersion(String ver) {
-    version = ver
-  }
-
   @DynamoDBAttribute(attributeName = "VersionStatus")
-  public String getVersionStatus() {
+  String getVersionStatus() {
     return versionStatus
   }
 
-  public void setVersionStatus(String s) {
-    versionStatus = s
-  }
-
   @DynamoDBAttribute(attributeName = "VersionNote")
-  public String getVersionNote() {
+  String getVersionNote() {
     return versionNote
   }
 
-  public void setVersionNote(String d) {
-    versionNote = d
-  }
-
-  public List<AClassVersionObject> findByClassAndStatus(String status) {
+  List<AClassVersionObject> findByClassAndStatus(String status) {
     String where = "VersionStatus = :myStatus"
-    ValueMap valueMap = new ValueMap()
-    .withString(":myStatus", status)
+    ValueMap valueMap = new ValueMap().withString(":myStatus", status)
 
-    List list = super.query(nameHashKey(), valueHashKey(), null, where, valueMap)
-    return list
+    return super.query(nameHashKey(), valueHashKey(), null, where, valueMap)
   }
 }
