@@ -13,7 +13,7 @@ grails.project.dependency.resolution = {
   }
 
   dependencies {
-    compile 'com.amazonaws:aws-java-sdk:1.9.30' // http://aws.amazon.com/releasenotes/Java?browse=1
+    compile 'com.amazonaws:aws-java-sdk:1.9.31' // http://aws.amazon.com/releasenotes/Java?browse=1
   }
 
   plugins {
@@ -25,7 +25,7 @@ grails.project.dependency.resolution = {
     compile ':plugin-config:0.2.0'
 
     // needed for aws-appconfig
-    compile ':aws-instance:0.5.3'
+    compile ':aws-instance:0.5.4'
 
     build(":release:3.1.1",
           ":rest-client-builder:2.1.1") {
