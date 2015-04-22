@@ -29,7 +29,7 @@ import ikakara.appconfig.util.Stats
 
 @CompileStatic
 @Slf4j("LOG")
-@ToString(includePackage=false, excludes="_username,_password")
+@ToString(includePackage=false, includeNames=true, excludes="_username,_password")
 class SQLHelper {
 
   // config requires a boolean true, (String) "true" will be false

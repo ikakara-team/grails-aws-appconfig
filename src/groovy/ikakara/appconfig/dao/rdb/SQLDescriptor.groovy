@@ -20,7 +20,7 @@ import groovy.transform.ToString
 
 @CompileStatic
 @Immutable
-@ToString(includePackage=false, excludes="username,password")
+@ToString(includePackage=false, includeNames=true, excludes="username,password")
 class SQLDescriptor {
   String driverClassName
   String url

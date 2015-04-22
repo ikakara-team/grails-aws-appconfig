@@ -27,7 +27,7 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility
 @GrailsCompileStatic
 @JsonAutoDetect(fieldVisibility = Visibility.NONE, getterVisibility = Visibility.NONE)
 @Slf4j("LOG")
-@ToString(includePackage=false, ignoreNulls=true)
+@ToString(includePackage=false, includeNames=true, ignoreNulls=true)
 @Validateable
 class ShardHost extends NameVersionShard {
   // id_shard

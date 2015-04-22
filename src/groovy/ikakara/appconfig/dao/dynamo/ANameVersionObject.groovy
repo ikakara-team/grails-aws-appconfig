@@ -30,7 +30,7 @@ import ikakara.awsinstance.dao.dynamo.ADynamoObject
 import ikakara.awsinstance.util.CalendarUtil
 
 @CompileStatic
-@ToString(includePackage=false, ignoreNulls=true)
+@ToString(includePackage=false, includeNames=true, ignoreNulls=true)
 @Slf4j("LOG")
 abstract class ANameVersionObject extends ADynamoObject implements ICommandObject {
 

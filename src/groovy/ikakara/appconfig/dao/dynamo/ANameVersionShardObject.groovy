@@ -28,7 +28,7 @@ import ikakara.awsinstance.json.FasterXMLInstance
 
 @CompileStatic
 @Slf4j("LOG")
-@ToString(includePackage=false, ignoreNulls=true, excludes="shardMapStr")
+@ToString(includePackage=false, includeNames=true, ignoreNulls=true, excludes="shardMapStr")
 abstract class ANameVersionShardObject extends ANameVersionObject implements IShardObject {
 
   @DynamoDBAttribute(attributeName = "ShardCount")

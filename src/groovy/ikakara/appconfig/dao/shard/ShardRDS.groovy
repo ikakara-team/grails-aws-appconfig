@@ -29,7 +29,7 @@ import ikakara.appconfig.dao.rdb.SQLDescriptor
 @GrailsCompileStatic
 @JsonAutoDetect(fieldVisibility = Visibility.NONE, getterVisibility = Visibility.NONE)
 @Slf4j("LOG")
-@ToString(includePackage=false, ignoreNulls=true, excludes="username,password")
+@ToString(includePackage=false, includeNames=true, ignoreNulls=true, excludes="username,password")
 @Validateable
 class ShardRDS extends NameVersionShard {
   // http://www.sql-workbench.net/manual/jdbc-setup.html
