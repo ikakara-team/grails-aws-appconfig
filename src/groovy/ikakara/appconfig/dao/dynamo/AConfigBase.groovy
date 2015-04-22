@@ -51,6 +51,7 @@ abstract class AConfigBase extends ANameVersionShardObject implements ITypeObjec
     return TABLE_NAME
   }
 
+  @Override
   Map initTable() {
     Map map = DynamoHelper.getTableInformation(tableName())
     if (map == null) {
@@ -98,9 +99,11 @@ abstract class AConfigBase extends ANameVersionShardObject implements ITypeObjec
     return outItem
   }
 
+  @Override
   @DynamoDBAttribute(attributeName = "ConfigType")
   abstract String getType()
 
+  @Override
   ADynamoObject newInstance(Item item) {
     ADynamoObject obj
 
@@ -109,8 +112,8 @@ abstract class AConfigBase extends ANameVersionShardObject implements ITypeObjec
       if (item.isPresent("ConfigType")) {
         String type = item.getString("ConfigType")
         switch (type) {
-          case ConfigRDS.CONFIG_TYPE: obj = new ConfigRDS(); break
-          case ConfigHost.CONFIG_TYPE: obj = new ConfigHost(); break
+        case ConfigRDS.CONFIG_TYPE: obj = new ConfigRDS(); break
+        case ConfigHost.CONFIG_TYPE: obj = new ConfigHost(); break
         }
       }
     }
