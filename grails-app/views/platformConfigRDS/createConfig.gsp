@@ -7,7 +7,7 @@
   </head>
   <body>
     <a href="#create-platformConfigRDS" class="skip" tabindex="-1"><g:message code="default.link.skip.label" default="Skip to content&hellip;"/></a>
-    <div class="navmenu" role="navigation">
+    <div class="nav" role="navigation">
       <ul>
         <li><a class="home" href="${request.contextPath}${grailsApplication.mergedConfig.grails.plugin.ikakara.appconfig.homePath}"><g:message code="default.home.label"/></a></li>
         <li><g:link class="list" action="indexConfig"><g:message code="default.list.label" args="[entityName]" /></g:link></li>
