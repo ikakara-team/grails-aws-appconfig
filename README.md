@@ -9,8 +9,8 @@ Installation:
 ```
   plugins {
 ...
-    compile ':aws-instance:0.5.7'
-    compile ':aws-appconfig:0.4.4'
+    compile ':aws-instance:0.6.0'
+    compile ':aws-appconfig:0.5.0'
 ...
   }
 ```
@@ -65,10 +65,8 @@ Apache 2 License - http://www.apache.org/licenses/LICENSE-2.0
 History:
 --------------
 ```
-0.4.3 - bump version (should be the last one)
-0.4.2 - misc tweaks
-0.4.1 - with()
-0.4   - breaking change: version is now Long
+0.5.0 - marshalItemOUT - breaking change
+0.4.3 - breaking change: version is now Long
 0.3   - more cleanup
 0.2   - merged Burt's cleanup
 0.1   - initial checkin

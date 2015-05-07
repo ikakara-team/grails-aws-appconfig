@@ -1,5 +1,5 @@
 class AwsAppconfigGrailsPlugin {
-  def version = "0.4.4"
+  def version = "0.5.0"
   def grailsVersion = "2.2 > *"
   List loadAfter = ['aws-instance']
   def title = "AWS App Config Plugin"

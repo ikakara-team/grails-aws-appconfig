@@ -38,7 +38,7 @@ abstract class ANameVersionObject extends ADynamoObject implements ICommandObjec
   public static final String STATUS_ACTIVE = "ACTIVE"
   public static final String STATUS_INACTIVE = "INACTIVE"
 
-  @DynamoDBHashKey(attributeName = "Name")
+  @DynamoDBHashKey(attributeName = "NameId")
   String name
   @DynamoDBRangeKey(attributeName = "Version")
   Long version // YYMMddHHmmss
@@ -57,7 +57,7 @@ abstract class ANameVersionObject extends ADynamoObject implements ICommandObjec
 
   @Override
   String nameHashKey() {
-    return "Name"
+    return "NameId"
   }
 
   @Override
@@ -73,8 +73,8 @@ abstract class ANameVersionObject extends ADynamoObject implements ICommandObjec
   @Override
   void marshalAttributesIN(Item item) {
     //if (map) {
-    if (item.isPresent("Name")) {
-      name = item.getString("Name")
+    if (item.isPresent("NameId")) {
+      name = item.getString("NameId")
     }
     if (item.isPresent("Version")) {
       version = item.getLong("Version")
@@ -89,18 +89,18 @@ abstract class ANameVersionObject extends ADynamoObject implements ICommandObjec
   }
 
   @Override
-  Item marshalItemOUT(boolean removeAttributeNull) {
+  Item marshalItemOUT(List removeAttributeNull) {
     Item outItem = new Item()
 
     if (versionStatus) {
       outItem = outItem.withString("VersionStatus", versionStatus)
-    } else if (removeAttributeNull) {
-      outItem = outItem.removeAttribute("VersionStatus")
+    } else if (removeAttributeNull != null) {
+      removeAttributeNull.add("VersionStatus")
     }
     if (versionNote) {
       outItem = outItem.withString("VersionNote", versionNote)
-    } else if (removeAttributeNull) {
-      outItem = outItem.removeAttribute("VersionNote")
+    } else if (removeAttributeNull != null) {
+      removeAttributeNull.add("VersionNote")
     }
 
     return outItem

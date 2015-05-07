@@ -84,7 +84,7 @@ abstract class AConfigBase extends ANameVersionShardObject implements ITypeObjec
   }
 
   @Override
-  Item marshalItemOUT(boolean removeAttributeNull) {
+  Item marshalItemOUT(List removeAttributeNull) {
     Item outItem = super.marshalItemOUT(removeAttributeNull)
     if (outItem == null) {
       outItem = new Item()
@@ -92,8 +92,8 @@ abstract class AConfigBase extends ANameVersionShardObject implements ITypeObjec
 
     if (getType()) {
       outItem = outItem.withString("ConfigType", getType())
-    } else if (removeAttributeNull) {
-      outItem = outItem.removeAttribute("ConfigType")
+    } else if (removeAttributeNull != null) {
+      removeAttributeNull.add("ConfigType")
     }
 
     return outItem

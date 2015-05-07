@@ -27,7 +27,7 @@ grails.project.dependency.resolution = {
     compile ':plugin-config:0.2.0'
 
     // needed for aws-appconfig
-    compile (':aws-instance:0.5.7') {
+    compile (':aws-instance:0.6.0') {
       export = false // allow user to use another version
     }
 

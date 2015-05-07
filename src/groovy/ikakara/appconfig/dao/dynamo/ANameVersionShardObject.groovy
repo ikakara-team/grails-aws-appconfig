@@ -52,18 +52,18 @@ abstract class ANameVersionShardObject extends ANameVersionObject implements ISh
   }
 
   @Override
-  Item marshalItemOUT(boolean removeAttributeNull) {
+  Item marshalItemOUT(List removeAttributeNull) {
     Item outItem = super.marshalItemOUT(removeAttributeNull) ?: new Item()
 
     if (shardCount != null) {
       outItem = outItem.withNumber("ShardCount", shardCount)
-    } else if (removeAttributeNull) {
-      outItem = outItem.removeAttribute("ShardCount")
+    } else if (removeAttributeNull != null) {
+      removeAttributeNull.add("ShardCount")
     }
     if (shardMapStr) {
       outItem = outItem.withString("ShardMap", shardMapStr)
-    } else if (removeAttributeNull) {
-      outItem = outItem.removeAttribute("ShardMap")
+    } else if (removeAttributeNull != null) {
+      removeAttributeNull.add("ShardMap")
     }
 
     return outItem
