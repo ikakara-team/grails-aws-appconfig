@@ -22,7 +22,7 @@ import ikakara.appconfig.dao.shard.ShardHost
 //import grails.plugin.springsecurity.annotation.Secured
 
 //@Secured(['ROLE_ADMIN'])
-class PlatformConfigHostController {
+class SysConfigHostController {
 
   static allowedMethods = [
     saveConfig: "POST", updateConfig: "PUT", deleteConfig: "DELETE",
@@ -75,7 +75,7 @@ class PlatformConfigHostController {
 
     request.withFormat {
       form multipartForm {
-        flash.message = message(code: 'default.created.message', args: [message(code: 'adminConfig.label', default: 'ConfigHost'), configHostInstance.id])
+        flash.message = message(code: 'default.created.message', args: [message(code: 'sysConfigHost.label', default: 'ConfigHost'), configHostInstance.id])
         redirect action: 'showConfig', id: configHostInstance.id
       }
       '*' { respond configHostInstance, [status: CREATED] }
@@ -141,7 +141,7 @@ class PlatformConfigHostController {
   protected void notFoundConfig() {
     request.withFormat {
       form multipartForm {
-        flash.message = message(code: 'default.not.found.message', args: [message(code: 'adminConfig.label', default: 'ConfigHost'), params.id])
+        flash.message = message(code: 'default.not.found.message', args: [message(code: 'sysConfigHost.label', default: 'ConfigHost'), params.id])
         redirect action: "indexConfig", method: "GET"
       }
       '*'{ render status: NOT_FOUND }
@@ -198,7 +198,7 @@ class PlatformConfigHostController {
 
     request.withFormat {
       form multipartForm {
-        flash.message = message(code: 'default.created.message', args: [message(code: 'adminConfig.label', default: 'ShardHost'), shardHostInstance.id])
+        flash.message = message(code: 'default.created.message', args: [message(code: 'sysConfigHost.label', default: 'ShardHost'), shardHostInstance.id])
         redirect action: 'showShard', id: shardHostInstance.id
       }
       '*' { respond shardHostInstance, [status: CREATED] }
@@ -280,7 +280,7 @@ class PlatformConfigHostController {
   protected void notFoundShard() {
     request.withFormat {
       form multipartForm {
-        flash.message = message(code: 'default.not.found.message', args: [message(code: 'adminConfig.label', default: 'ShardHost'), params.id])
+        flash.message = message(code: 'default.not.found.message', args: [message(code: 'sysConfigHost.label', default: 'ShardHost'), params.id])
         redirect action: "showConfig", method: "GET", id: params.id
       }
       '*'{ render status: NOT_FOUND }

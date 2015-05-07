@@ -22,7 +22,7 @@ import ikakara.appconfig.dao.shard.ShardRDS
 //import grails.plugin.springsecurity.annotation.Secured
 
 //@Secured(['ROLE_ADMIN'])
-class PlatformConfigRDSController {
+class SysConfigRDSController {
 
   static allowedMethods = [
     saveConfig: "POST", updateConfig: "PUT", deleteConfig: "DELETE",
@@ -76,7 +76,7 @@ class PlatformConfigRDSController {
 
     request.withFormat {
       form multipartForm {
-        flash.message = message(code: 'default.created.message', args: [message(code: 'adminConfig.label', default: 'ConfigRDS'), configRDSInstance.id])
+        flash.message = message(code: 'default.created.message', args: [message(code: 'sysConfigRDS.label', default: 'ConfigRDS'), configRDSInstance.id])
         redirect action: 'showConfig', id: configRDSInstance.id
       }
       '*' { respond configRDSInstance, [status: CREATED] }
@@ -142,7 +142,7 @@ class PlatformConfigRDSController {
   protected void notFoundConfig() {
     request.withFormat {
       form multipartForm {
-        flash.message = message(code: 'default.not.found.message', args: [message(code: 'adminConfig.label', default: 'ConfigRDS'), params.id])
+        flash.message = message(code: 'default.not.found.message', args: [message(code: 'sysConfigRDS.label', default: 'ConfigRDS'), params.id])
         redirect action: "indexConfig", method: "GET"
       }
       '*'{ render status: NOT_FOUND }
@@ -199,7 +199,7 @@ class PlatformConfigRDSController {
 
     request.withFormat {
       form multipartForm {
-        flash.message = message(code: 'default.created.message', args: [message(code: 'adminConfig.label', default: 'ShardRDS'), shardRDSInstance.id])
+        flash.message = message(code: 'default.created.message', args: [message(code: 'sysConfigRDS.label', default: 'ShardRDS'), shardRDSInstance.id])
         redirect action: 'showShard', id: shardRDSInstance.id
       }
       '*' { respond shardRDSInstance, [status: CREATED] }
@@ -281,7 +281,7 @@ class PlatformConfigRDSController {
   protected void notFoundShard() {
     request.withFormat {
       form multipartForm {
-        flash.message = message(code: 'default.not.found.message', args: [message(code: 'adminConfig.label', default: 'ShardRDS'), params.id])
+        flash.message = message(code: 'default.not.found.message', args: [message(code: 'sysConfigRDS.label', default: 'ShardRDS'), params.id])
         redirect action: "showConfig", method: "GET", id: params.id
       }
       '*'{ render status: NOT_FOUND }

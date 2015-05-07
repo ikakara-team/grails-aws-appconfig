@@ -42,7 +42,7 @@
       <li><g:link action="showShard" id="${configRDSInstance?.id}_${s.key}">${s?.value.prettyPrint().encodeAsHTML()}</g:link></li>
       </g:each>
     <li class="add">
-      <g:link action="createShard" params="['id': configRDSInstance?.id]">${message(code: 'default.add.label', args: [message(code: 'platformConfigRDS.label', default: 'Shard')])}</g:link>
+      <g:link action="createShard" params="['id': configRDSInstance?.id]">${message(code: 'default.add.label', args: [message(code: 'sysConfigRDS.label', default: 'Shard')])}</g:link>
       </li>
     </ul>
   </div>
