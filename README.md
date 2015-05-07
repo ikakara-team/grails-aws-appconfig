@@ -10,7 +10,7 @@ Installation:
   plugins {
 ...
     compile ':aws-instance:0.6.0'
-    compile ':aws-appconfig:0.5.0'
+    compile ':aws-appconfig:0.5.1'
 ...
   }
 ```
@@ -65,6 +65,7 @@ Apache 2 License - http://www.apache.org/licenses/LICENSE-2.0
 History:
 --------------
 ```
+0.5.1 - added files to test plugin
 0.5.0 - marshalItemOUT - breaking change
 0.4.3 - breaking change: version is now Long
 0.3   - more cleanup

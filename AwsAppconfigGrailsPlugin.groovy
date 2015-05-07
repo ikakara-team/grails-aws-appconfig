@@ -1,6 +1,12 @@
 class AwsAppconfigGrailsPlugin {
-  def version = "0.5.0"
+  def version = "0.5.1"
   def grailsVersion = "2.2 > *"
+  def pluginExcludes = [
+    "grails-app/i18n/*",          // needed to test plugin
+    "grails-app/views/error.gsp", // needed to test plugin
+    "grails-app/views/index.gsp", // needed to test plugin
+    "web-app/**"
+  ]
   List loadAfter = ['aws-instance']
   def title = "AWS App Config Plugin"
   def author = "Allen Arakaki"
