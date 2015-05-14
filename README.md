@@ -9,7 +9,7 @@ Installation:
 ```
   plugins {
 ...
-    compile ':aws-instance:0.6.0'
+    compile ':aws-instance:0.6.1'
     compile ':aws-appconfig:0.5.1'
 ...
   }

@@ -13,13 +13,13 @@ grails.project.dependency.resolution = {
   }
 
   dependencies {
-    compile ('com.amazonaws:aws-java-sdk:1.9.33') { // http://aws.amazon.com/releasenotes/Java?browse=1
+    compile ('com.amazonaws:aws-java-sdk:1.9.34') { // http://aws.amazon.com/releasenotes/Java?browse=1
       export = false // allow user to use another version
     }
   }
 
   plugins {
-    build (":tomcat:8.0.21" ){
+    build (":tomcat:8.0.22" ){
       export = false
     }
 
@@ -27,7 +27,7 @@ grails.project.dependency.resolution = {
     compile ':plugin-config:0.2.0'
 
     // needed for aws-appconfig
-    compile (':aws-instance:0.6.0') {
+    compile (':aws-instance:0.6.1') {
       export = false // allow user to use another version
     }
 
