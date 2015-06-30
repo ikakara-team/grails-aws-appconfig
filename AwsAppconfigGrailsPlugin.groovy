@@ -1,5 +1,5 @@
 class AwsAppconfigGrailsPlugin {
-  def version = "0.5.1"
+  def version = "0.5.2"
   def grailsVersion = "2.2 > *"
   def pluginExcludes = [
     "grails-app/i18n/*",          // needed to test plugin
